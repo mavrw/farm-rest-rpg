@@ -28,7 +28,7 @@ The game allows users to manage their farms, plant and harvest crops, sell goods
 - Implement real-time chat or multi-player features
 - Integrate payment services for microtransactions
 - Enable direct player-to-player interactions or trading
-- Add extended features such as orchards, brewing, or crafting systems
+- Add extended features such as animals, orchards, brewing, or crafting systems
 - Support mobile platforms or native desktop clients
 - Implement MFA sign-in authentication via HOTP
 
@@ -104,6 +104,63 @@ graph TD
 ---
 
 ## Data Models/Schema
+
+### Tables Overview
+
+```plaintext
+users
+- id (PK)
+- username
+- email
+- password_hash
+- created_at
+
+farms
+- id (PK)
+- user_id (FK to users)
+- name
+- created_at
+
+plots
+- id (PK)
+- farm_id (FK to farms)
+- x
+- y
+- soil_type
+- crop_id (FK to crops, nullable)
+- planted_at
+
+crops
+- id (PK)
+- name
+- growth_time
+- yield_amount
+- season
+
+animals
+- id (PK)
+- farm_id (FK to farms)
+- type
+- age
+- health
+- hunger
+- last_fed_at
+
+items
+- id (PK)
+- name
+- type (tool, seed, feed, etc.)
+- effect_json
+
+inventory
+- id (PK)
+- user_id (FK to users)
+- item_id (FK to items)
+- quantity
+
+```
+
+> Future Expansions: `quests`, `weather`, `npc`, `player_exchange`, etc.
 
 ---
 
