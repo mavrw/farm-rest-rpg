@@ -64,6 +64,43 @@ Infrastructure will be defined and deployed using [Terraform] to ensure repeatib
 - S3 for static asset hosting
 - IAM roles and security groups for access control
 
+### Architecture Diagram
+
+```mermaid
+graph TD
+  subgraph Frontend
+    A[Vue 3 App]
+  end
+
+  subgraph Backend
+    B[Go + Gin API]
+    B --> C[sqlc]
+  end
+
+  subgraph Database
+    D[(PostgreSQL DB)]
+  end
+
+  subgraph AWS Infrastructure
+    E[Terraform]
+    F[EC2 or ECS/Fargate]
+    G[RDS - PostgreSQL]
+    H[S3 - optional]
+    I[IAM Roles/Security Groups]
+  end
+
+  A -->|HTTP - JSON REST| B
+  B -->|SQL Queries| D
+  E --> H
+  E --> F
+  E --> G
+  E --> I
+  F --> B
+  G --> D
+  A --> H
+
+```
+
 ---
 
 ## Data Models/Schema
