@@ -247,7 +247,7 @@ inventory
 
 ### Logging, Monitoring, and Error Tracking
 
-> *How will loggins, monitoring, and error tracking be implemented?*
+> *How will logging, monitoring, and error tracking be implemented?*
 
 ### Rollback and Recovery Plans
 
