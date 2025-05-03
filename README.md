@@ -166,6 +166,21 @@ inventory
 
 ## API/Interface Design
 
+### Public
+
+- `POST /api/v1/register`  
+- `POST /api/v1/login`  
+
+### Protected (JWT)
+
+- `GET  /api/v1/farm`  
+- `POST /api/v1/plot/plant`  
+- `POST /api/v1/plot/harvest`  
+- `POST /api/v1/animal/feed`  
+- `GET  /api/v1/inventory`  
+- `POST /api/v1/market/buy`  
+- `POST /api/v1/market/sell`  
+
 ---
 
 ## Design Details
