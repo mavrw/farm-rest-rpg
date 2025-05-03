@@ -57,7 +57,7 @@ The initial frontend will be a minimal [Vue3] application, primarily used for te
 
 ### AWS Infrastructure
 
-Infrastructure will be defined and deployed using [Terraform] to ensure repeatibility and version control. The architecture will initially consist of:
+Infrastructure will be defined and deployed using [Terraform] to ensure repeatability and version control. The architecture will initially consist of:
 
 - An EC2 instance or container service (ECS/Fargate) to host the API
 - RDS for PostgreSQL
@@ -185,24 +185,78 @@ inventory
 
 ## Design Details
 
+### Time-based Crop Growth
+
+> *What is the tick/loop model? How are time-based events handled?*
+
+### Inventory Transaction Handling
+
+> *How is atomicity handled? How are inventory rollbacks handled? How are potential buy/sell race conditions handled?*
+
+### Data Access Patterns
+
+> *Is RESTful CRUD sufficient, or should CQRS be explored as well?*
+
 ---
 
 ## Security & Performance
+
+### Authentication/Authorization
+
+> *What is the JWT expiration and refresh strategy?*
+
+### Data validation/sanitization
+
+> *How is SQL Injection prevented?*
+
+### Performance Expectations or Bottlenecks
+
+### Rate Limits
+
+> *How is rate limiting implemented to prevent against DDOS or Brute Force attacks?*
+
+### Caching
+
+> *Does caching need to be implemented to buffer database operations?*
 
 ---
 
 ## Testing Plan
 
+### Unit Tests
+
+### Integration Tests
+
+### Testing Tools/Frameworks
+
+- `Postman`
+
 ---
 
 ## Deployment & Operations
+
+### Environments
+
+- `dev`
+- `staging`
+- `prod`
+
+### Deployment Process
+
+> *How will deployments take place?*
+
+### Logging, Monitoring, and Error Tracking
+
+> *How will loggins, monitoring, and error tracking be implemented?*
+
+### Rollback and Recovery Plans
+
+> *In the event of a deployment failure or other catastrophy, what is the rollback and recovery plan?*
 
 ---
 
 ## Risks & Mitigations
 
----
-
-## Appendix/References
+> *What potential technical or process risks can be identified? How can they be mitigated?*
 
 ---
