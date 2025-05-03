@@ -6,6 +6,8 @@ This document outlines the technical design of a text-based farming RPG game des
 
 The game allows users to manage their farms, plant and harvest crops, sell goods at the town market, and engage in other time-based activities.
 
+---
+
 ## Goals & Non-Goals
 
 ### Goals
@@ -29,6 +31,8 @@ The game allows users to manage their farms, plant and harvest crops, sell goods
 - Add extended features such as orchards, brewing, or crafting systems
 - Support mobile platforms or native desktop clients
 - Implement MFA sign-in authentication via HOTP
+
+---
 
 ## Architecture Overview
 
@@ -60,18 +64,36 @@ Infrastructure will be defined and deployed using [Terraform] to ensure repeatib
 - S3 for static asset hosting
 - IAM roles and security groups for access control
 
+---
+
 ## Data Models/Schema
+
+---
 
 ## API/Interface Design
 
+---
+
 ## Design Details
+
+---
 
 ## Security & Performance
 
+---
+
 ## Testing Plan
+
+---
 
 ## Deployment & Operations
 
+---
+
 ## Risks & Mitigations
 
+---
+
 ## Appendix/References
+
+---
