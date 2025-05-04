@@ -203,17 +203,19 @@ inventory
 
 ### Authentication/Authorization
 
-> *What is the JWT expiration and refresh strategy?*
+> *What is the JWT expiration and refresh strategy? 15m access, 7d refresh?*
+> *How will passwords be stored securely, and not in plaintext? Argon2 or bcrypt?*
 
 ### Data validation/sanitization
 
-> *How is SQL Injection prevented?*
+> *How is SQL Injection prevented? Prepared `sqlc` statements*
 
 ### Performance Expectations or Bottlenecks
 
 ### Rate Limits
 
 > *How is rate limiting implemented to prevent against DDOS or Brute Force attacks?*
+> *Token bucket or leaky bucket? How will the chosen method be implemented?*
 
 ### Caching
 
