@@ -255,7 +255,9 @@ inventory
 
 ### Deployment Process
 
-> *How will deployments take place?*
+> *What is the CI/CD plan?*
+> *What is the rollback plan? Container version pinning, DB schema backup/restore approach, etc.*
+> *How will the secure storage of environment variables be implemented? SSM Parameter store in `prod`, `.env` file in `dev`?*
 
 ### Logging, Monitoring, and Error Tracking
 
