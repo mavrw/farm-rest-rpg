@@ -261,7 +261,10 @@ inventory
 
 ### Logging, Monitoring, and Error Tracking
 
-> *How will logging, monitoring, and error tracking be implemented?*
+> *What logging library will be used?*
+> *Where will logs go? Cloudwatch Logs? S3 archival?*
+> *What is the strategy for panic-recovery and stack tracing logs in production?*
+> *Will metrics/alerts be used, such as Prometheus, CloudWatch Alarms, Grafana?*
 
 ### Rollback and Recovery Plans
 
