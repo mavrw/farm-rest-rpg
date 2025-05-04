@@ -269,6 +269,9 @@ inventory
 
 ## Risks & Mitigations
 
-> *What potential technical or process risks can be identified? How can they be mitigated?*
+> *How will time-based server events be prevented from creating excessive server load? batching or lazy evaluation?*
+> *How will race conditions in planting/harvesting be prevented? db locking or row-versioning?*
+> *How will data corruption from early deployments be mitigated? migration versioning?*
+> *How will vendor lock-in be avoided? Use docker for local testing and off-cloud deployments?*
 
 ---
