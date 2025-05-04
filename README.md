@@ -226,11 +226,22 @@ inventory
 
 ### Unit Tests
 
+> *Which areas of the codebase will need fine-grained testing in isolation?*
+> *How will business logic be separated from infrastructure to enable testability?*
+> *What mocking strategy, if any, will be used for dependencies(i.e. database) and external services?*
+
 ### Integration Tests
+
+> *Which endpoints or workflows need end-to-end validation across multiple layers (API, DB, Auth)?*
+> *How will isolated environments, such as a test database, be managed?*
+> *Which critical game flows should always be covered by integration tests?*
+> *Will integration testing be ran via CI/CD, or only locally?*
 
 ### Testing Tools/Frameworks
 
-- `Postman`
+> *Which testing libraries and tools will be used for Go (e.g. `testing`, `testify`, `httptest`)?*
+> *Will any frontend testing frameworks be used for the frontend Vue app?*
+> *How will database test fixtures or migrations be managed during tests?*
 
 ---
 
