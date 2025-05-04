@@ -217,7 +217,8 @@ inventory
 
 ### Caching
 
-> *Does caching need to be implemented to buffer database operations?*
+> *Does caching need to be implemented to offload database work, such as user farm data, inventory, or other frequently accessed data?*
+> *How will invalidation be handled for mutated data?*
 
 ---
 
