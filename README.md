@@ -167,22 +167,6 @@ crops
 - season
 ```
 
-#### Animals
-
-- Represents a single animal on a user's farm.
-- Contains information about the animal's type, age, health, hunger, and last feeding time.
-
-```plaintext
-animals
-- id (PK)
-- farm_id (FK to farms)
-- type
-- age
-- health
-- hunger
-- last_fed_at
-```
-
 #### Items
 
 - Represents items that can be in a player's inventory.
@@ -210,6 +194,24 @@ inventory
 ```
 
 > Future Expansions: `quests`, `weather`, `npc`, `player_exchange`, etc.
+
+### Provisional Tables
+
+#### Animals
+
+- Represents a single animal on a user's farm.
+- Contains information about the animal's type, age, health, hunger, and last feeding time.
+
+```plaintext
+animals
+- id (PK)
+- farm_id (FK to farms)
+- type
+- age
+- health
+- hunger
+- last_fed_at
+```
 
 ---
 
