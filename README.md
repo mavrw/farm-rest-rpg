@@ -55,7 +55,7 @@ The backend API will be written in Go using the [Gin] framework for routing and 
 
 The initial frontend will be a minimal [Vue3] application, primarily used for testing API endpoints and simulating player interaction.* Future iterations may enhance UI/UX or incorporate other frontend frameworks.  
 
-**This UI is primarily for testing and admin conveience; It is not representative of a polished user experience.*
+**This UI is primarily for testing and admin convenience; It is not representative of a polished user experience.*
 
 ### AWS Infrastructure
 
