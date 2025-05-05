@@ -280,6 +280,7 @@ animals
 
 > *What is the JWT expiration and refresh strategy? 15m access, 7d refresh?*  
 > *How will passwords be stored securely, and not in plaintext? Argon2 or bcrypt?*  
+> *What is the token revocation strategy?*  
 
 ### Data validation/sanitization
 
