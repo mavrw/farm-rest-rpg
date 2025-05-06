@@ -52,6 +52,7 @@ coverage/
 /devops/.terraform/
 /devops/terraform.tfstate*
 /devops/.env
+!/devops/.env.example
 
 # Cypress / E2E
 /cypress/videos/
