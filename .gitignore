@@ -1,0 +1,59 @@
+# Global
+.DS_Store
+Thumbs.db
+*.log
+*.env
+*.env.*
+*.local
+*.bak
+*.swp
+*.tmp
+.vscode/
+.idea/
+node_modules/
+dist/
+coverage/
+.envrc
+.envrc.local
+
+# Docker
+**/docker-data/
+**/docker-compose.override.yml
+
+# Git
+.git/
+.gitmodules
+*.orig
+
+# Go
+/go/bin/
+/go/pkg/
+/go.sum
+*.out
+*.test
+*.coverprofile
+*.prof
+*.exe
+
+# Vue / Frontend
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.vite/
+/frontend/.output/
+/frontend/coverage/
+/frontend/public/build/
+
+# Database
+/database/migrations/.dbdev.json
+/database/*.sqlite
+/database/tmp/
+
+# DevOps
+/devops/.terraform/
+/devops/terraform.tfstate*
+/devops/.env
+
+# Cypress / E2E
+/cypress/videos/
+/cypress/screenshots/
+/cypress/downloads/
