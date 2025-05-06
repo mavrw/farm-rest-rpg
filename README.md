@@ -108,7 +108,7 @@ From the project root:
 - **Migrations**
 
   - Write new SQL files in `db/migrations/`
-  - Apply locally with `make up` (runs migrations on startup)
+  - Apply locally with `make up` (runs migrations on startup)((No it doesn't, not yet. It will. Need to add a `migrate` service to docker-compose first.))
 - **SQLC Models**
 
   - Define SQL queries in `backend/internal/db/queries/`
