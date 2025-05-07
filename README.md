@@ -43,7 +43,15 @@ A monorepo for a text-based farming RPG game, featuring:
 5. **Stop & clean up**
 
    ```bash
+   # Tear down all services (docker compose down)
    make down
+   ```
+
+    **OR**  
+
+   ```bash
+   # Tear down all services and volumes  (docker compose down -v)
+   make downv
    ```
 
 ---
@@ -56,7 +64,7 @@ text-farming-rpg/
 │   ├── cmd/api          # main.go entrypoint
 │   ├── internal/        # business logic, auth, farm, inventory, db
 │   ├── api/             # HTTP handlers & routes
-│   ├── migrations/      # SQL migration files
+│   ├── queries/         # sqlc query files
 │   ├── sqlc.yaml        # sqlc config
 │   └── Dockerfile
 │
@@ -95,6 +103,7 @@ From the project root:
 | --------------------------------- | --------------------------------------------------------------------- |
 | `make up`                         | Build images & start all services (db, backend, frontend, nginx)      |
 | `make down`                       | Stop & remove all containers                                          |
+| `make downv`                       | Stop & remove all containers and volumes                                          |
 | `make migrate`                    | Starts db & runs migrate service                                      |
 | `make build-backend`              | Build only the backend Docker image                                   |
 | `make build-frontend`             | Build only the frontend Docker image                                  |

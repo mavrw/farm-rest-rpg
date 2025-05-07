@@ -1,4 +1,4 @@
-.PHONY: help up down migrate build-backend build-frontend test logs
+.PHONY: help up down downv migrate build-backend build-frontend test logs
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -10,8 +10,11 @@ up:               ## Build & start all services (db, migrate, backend, frontend,
 down:             ## Tear down all services
 	docker compose down
 
+downv:             ## Tear down all services and volumes
+	docker compose down -v
+
 migrate:
-	docker compose up migrate
+	docker compose up migrate --build -d
 
 build-backend:    ## Build only the backend image
 	docker compose build backend
