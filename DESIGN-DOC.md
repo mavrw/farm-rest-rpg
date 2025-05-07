@@ -117,7 +117,7 @@ graph TD
 - Represents a user account.
 
 ```plaintext
-users
+user
 - id (PK)
 - username
 - email
@@ -130,7 +130,7 @@ users
 - Represents a user's farm.
 
 ```plaintext
-farms
+farm
 - id (PK)
 - user_id (FK to users)
 - name
@@ -143,7 +143,7 @@ farms
 - May contain a planted crop, or could be empty. Tracks soil type and crop state.
 
 ```plaintext
-plots
+plot
 - id (PK)
 - farm_id (FK to farms)
 - x
@@ -159,7 +159,7 @@ plots
 - Contains information regarding crop growth time, yield, and planting season (if applicable).
 
 ```plaintext
-crops
+crop
 - id (PK)
 - name
 - growth_time
@@ -173,7 +173,7 @@ crops
 - Contains information about the item such as, the item's name, type, and any effects associated with the item.
 
 ```plaintext
-items
+item
 - id (PK)
 - name
 - type (tool, seed, feed, etc.)
