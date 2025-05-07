@@ -95,6 +95,7 @@ From the project root:
 | --------------------------------- | --------------------------------------------------------------------- |
 | `make up`                         | Build images & start all services (db, backend, frontend, nginx)      |
 | `make down`                       | Stop & remove all containers                                          |
+| `make migrate`                    | Starts db & runs migrate service                                      |
 | `make build-backend`              | Build only the backend Docker image                                   |
 | `make build-frontend`             | Build only the frontend Docker image                                  |
 | `make test`                       | Run backend tests (requires `db` up)                                  |
@@ -107,8 +108,8 @@ From the project root:
 
 - **Migrations**
 
-  - Write new SQL files in `db/migrations/`
-  - Apply locally with `make up` (runs migrations on startup)((No it doesn't, not yet. It will. Need to add a `migrate` service to docker-compose first.))
+  - Create new SQL files in `db/migrations/` using `goose create NEW_MIGRATION_NAME sql`, and write the up and down queries within the newly generated `sql` migration file
+  - Apply locally with `make migrate` (or `make up`, the `migrate` service is a dependency for `backend`)
 - **SQLC Models**
 
   - Define SQL queries in `backend/internal/db/queries/`
