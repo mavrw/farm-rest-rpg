@@ -1,16 +1,41 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"net/http"
+
+	"github.com/gin-gonic/gin"
+
+	"github.com/mavrw/farm-rest-rpg/backend/config"
+	"github.com/mavrw/farm-rest-rpg/backend/internal/auth"
+	"github.com/mavrw/farm-rest-rpg/backend/internal/db"
+	"github.com/mavrw/farm-rest-rpg/backend/pkg/middleware"
 )
 
 func main() {
-	http.HandleFunc("/api/hello", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, "Hello from Go backend!")
-	})
+	// load config
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatalf("config load error: %v", err)
+	}
 
-	log.Println("Listening on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	// connect to databsae
+	dbPool, err := db.Connect(cfg.DB)
+	if err != nil {
+		log.Fatalf("database load error: %v", err)
+	}
+	defer dbPool.Close()
+
+	// create router and register middleware
+	router := gin.Default()
+	router.Use(middleware.RequestLogger())
+	// router.Use(middleware.CORSMiddleWare())
+	// router.Use(middleware.AuthMiddleware(cfg.Auth.JWTSecret))
+	router.Use(middleware.RLS()) // injects current_user_id into context
+
+	// register routes and pass deps
+	auth.RegisterRoutes(router, dbPool, cfg.Auth)
+
+	// start the server
+	addr := ":" + cfg.Server.Port
+	router.Run(addr)
 }

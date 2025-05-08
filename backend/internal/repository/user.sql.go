@@ -9,32 +9,38 @@ import (
 	"context"
 )
 
-const getUsers = `-- name: GetUsers :many
-SELECT  FROM user
+const createUser = `-- name: CreateUser :exec
+INSERT INTO "user" (username, email, password_hash)
+VALUES ($1, $2, $3)
 `
 
-type GetUsersRow struct {
+type CreateUserParams struct {
+	Username     string
+	Email        string
+	PasswordHash string
 }
 
-func (q *Queries) GetUsers(ctx context.Context) ([]GetUsersRow, error) {
-	rows, err := q.db.QueryContext(ctx, getUsers)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []GetUsersRow
-	for rows.Next() {
-		var i GetUsersRow
-		if err := rows.Scan(); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
+	_, err := q.db.Exec(ctx, createUser, arg.Username, arg.Email, arg.PasswordHash)
+	return err
+}
+
+const getUserByEmail = `-- name: GetUserByEmail :one
+SELECT id, username, email, password_hash, created_at, updated_at
+FROM "user"
+WHERE email = $1
+`
+
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByEmail, email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Email,
+		&i.PasswordHash,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }

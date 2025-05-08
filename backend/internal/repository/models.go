@@ -5,15 +5,54 @@
 package repository
 
 import (
-	"database/sql"
-	"time"
+	"github.com/jackc/pgx/v5/pgtype"
 )
+
+type Crop struct {
+	ID          int32
+	Name        string
+	GrowthTime  int32
+	YieldAmount int32
+	Season      string
+}
+
+type Farm struct {
+	ID        int32
+	UserID    int32
+	Name      string
+	CreatedAt pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
+}
+
+type Inventory struct {
+	ID       int32
+	UserID   int32
+	ItemID   int32
+	Quantity int32
+}
+
+type Item struct {
+	ID         int32
+	Name       string
+	Tool       string
+	EffectJson []byte
+}
+
+type Plot struct {
+	ID        int32
+	FarmID    int32
+	X         int32
+	Y         int32
+	SoilType  string
+	CropID    pgtype.Int4
+	PlantedAt pgtype.Timestamp
+}
 
 type User struct {
 	ID           int32
 	Username     string
-	Email        sql.NullString
+	Email        string
 	PasswordHash string
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
+	CreatedAt    pgtype.Timestamp
+	UpdatedAt    pgtype.Timestamp
 }

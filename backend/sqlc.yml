@@ -7,3 +7,9 @@ sql:
     go:
       package: "repository"
       out: "internal/repository"
+      sql_package: "pgx/v5"
+      overrides:
+        - db_type: "text"
+          go_type: 
+            type: "string"
+          nullable: true
