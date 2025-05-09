@@ -13,3 +13,39 @@ sql:
           go_type: 
             type: "string"
           nullable: true
+        
+        - db_type: "timestamptz"
+          go_type:
+            type: "time.Time"
+        
+        - db_type: "timestamptz"
+          go_type:
+            type: "time.Time"
+            pointer: true
+          nullable: true
+
+        - db_type: "pg_catalog.timestamp"
+          go_type:
+            type: "time.Time"
+        
+        - db_type: "pg_catalog.timestamp"
+          go_type:
+            type: "time.Time"
+            pointer: true
+          nullable: true
+
+        - db_type: "uuid"
+          go_type:
+            import: "github.com/google/uuid"
+            type: "UUID"
+
+        - db_type: "pg_catalog.int4"
+          go_type:
+            type: "int32"
+          nullable: true
+
+        - db_type: "pg_catalog.bool"
+          go_type:
+            type: "bool"
+            pointer: true
+          nullable: true
