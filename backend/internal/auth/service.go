@@ -4,8 +4,16 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/repository"
+	"golang.org/x/crypto/bcrypt"
+)
+
+const (
+	AuthTokenExpiryHours    = time.Hour * 24
+	RefreshTokenExpiryHours = time.Hour * 24 * 14
 )
 
 var (
@@ -23,10 +31,15 @@ func NewAuthService(q *repository.Queries, jwtSecret string) *AuthService {
 }
 
 func (s *AuthService) Register(ctx context.Context, in RegisterInput) error {
+	ph, err := hashPassword(in.Password)
+	if err != nil {
+		return err
+	}
+
 	params := repository.CreateUserParams{
 		Username:     in.Username,
 		Email:        in.Email,
-		PasswordHash: hashPassword(in.Password),
+		PasswordHash: ph,
 	}
 
 	return s.q.CreateUser(ctx, params)
@@ -42,24 +55,53 @@ func (s *AuthService) Login(ctx context.Context, in LoginInput) (string, error) 
 		return "", err
 	}
 
-	if !checkPassword(in.Password, user.PasswordHash) {
+	if err := checkPassword(in.Password, user.PasswordHash); err != nil {
 		return "", ErrInvalidCredentials
 	}
 
-	return signJWT(user.ID, s.secret), nil
+	return signJWT(user.ID, s.secret)
 }
 
-// TODO: MUST BE IMPLEMENTED
-func hashPassword(password string) string {
-	return password
+func hashPassword(password string) (string, error) {
+	h, err := bcrypt.GenerateFromPassword(
+		[]byte(password),
+		bcrypt.DefaultCost,
+	)
+	if err != nil {
+		return "", err
+	}
+
+	return string(h), nil
 }
 
-// TODO: MUST BE IMPLEMENTED
-func checkPassword(password, passwordHash string) bool {
-	return true
+func checkPassword(password, passwordHash string) error {
+	err := bcrypt.CompareHashAndPassword(
+		[]byte(password),
+		[]byte(passwordHash),
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
-// TODO: MUST BE IMPLEMENTED
-func signJWT(userId int32, secret string) string {
-	return ""
+func signJWT(userId int32, secret string) (string, error) {
+	claims := jwt.MapClaims{
+		"sub": userId,
+		"exp": time.Now().Add(AuthTokenExpiryHours).Unix(),
+		"iat": time.Now().Unix(),
+	}
+
+	token := jwt.NewWithClaims(
+		jwt.SigningMethodHS256,
+		claims,
+	)
+
+	signedToken, err := token.SignedString([]byte(secret))
+	if err != nil {
+		return "", err
+	}
+
+	return signedToken, nil
 }
