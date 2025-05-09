@@ -5,7 +5,9 @@
 package repository
 
 import (
-	"github.com/jackc/pgx/v5/pgtype"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 type Crop struct {
@@ -20,8 +22,8 @@ type Farm struct {
 	ID        int32
 	UserID    int32
 	Name      string
-	CreatedAt pgtype.Timestamp
-	UpdatedAt pgtype.Timestamp
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type Inventory struct {
@@ -44,8 +46,17 @@ type Plot struct {
 	X         int32
 	Y         int32
 	SoilType  string
-	CropID    pgtype.Int4
-	PlantedAt pgtype.Timestamp
+	CropID    int32
+	PlantedAt *time.Time
+}
+
+type RefreshToken struct {
+	ID        uuid.UUID
+	UserID    int32
+	Token     string
+	ExpiresAt time.Time
+	Revoked   *bool
+	CreatedAt *time.Time
 }
 
 type User struct {
@@ -53,6 +64,6 @@ type User struct {
 	Username     string
 	Email        string
 	PasswordHash string
-	CreatedAt    pgtype.Timestamp
-	UpdatedAt    pgtype.Timestamp
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }

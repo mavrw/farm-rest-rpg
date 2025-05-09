@@ -6,8 +6,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/repository"
+	"github.com/mavrw/farm-rest-rpg/backend/pkg/jwtutil"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -59,7 +60,43 @@ func (s *AuthService) Login(ctx context.Context, in LoginInput) (string, error) 
 		return "", ErrInvalidCredentials
 	}
 
-	return signJWT(user.ID, s.secret)
+	return jwtutil.Sign(user.ID, jwtutil.TokenCfg{Secret: s.secret})
+}
+
+func (s *AuthService) Refresh(ctx context.Context, token string) (string, string, error) {
+	rt, err := s.q.GetRefreshToken(ctx, token)
+	if err != nil {
+		return "", "", err
+	}
+
+	// Rotate
+	_ = s.q.RevokeRefreshToken(ctx, token)
+
+	newToken := uuid.NewString()
+	expires := time.Now().Add(RefreshTokenExpiryHours)
+
+	_, err = s.q.CreateRefreshToken(ctx, repository.CreateRefreshTokenParams{
+		UserID:    rt.UserID,
+		Token:     newToken,
+		ExpiresAt: expires,
+	})
+	if err != nil {
+		return "", "", err
+	}
+
+	at, err := jwtutil.Sign(rt.UserID, jwtutil.TokenCfg{
+		Secret: s.secret,
+		TTL:    AuthTokenExpiryHours,
+	})
+	if err != nil {
+		return "", "", err
+	}
+
+	return at, newToken, nil
+}
+
+func (s *AuthService) RevokeRefreshToken(ctx context.Context, token string) error {
+	return s.q.RevokeRefreshToken(ctx, token)
 }
 
 func hashPassword(password string) (string, error) {
@@ -84,24 +121,4 @@ func checkPassword(password, passwordHash string) error {
 	}
 
 	return nil
-}
-
-func signJWT(userId int32, secret string) (string, error) {
-	claims := jwt.MapClaims{
-		"sub": userId,
-		"exp": time.Now().Add(AuthTokenExpiryHours).Unix(),
-		"iat": time.Now().Unix(),
-	}
-
-	token := jwt.NewWithClaims(
-		jwt.SigningMethodHS256,
-		claims,
-	)
-
-	signedToken, err := token.SignedString([]byte(secret))
-	if err != nil {
-		return "", err
-	}
-
-	return signedToken, nil
 }

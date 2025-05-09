@@ -29,7 +29,7 @@ func main() {
 	router := gin.Default()
 	router.Use(middleware.RequestLogger())
 	// router.Use(middleware.CORSMiddleWare())
-	// router.Use(middleware.AuthMiddleware(cfg.Auth.JWTSecret))
+	router.Use(middleware.AuthMiddleware(cfg.Auth.JWTSecret))
 	router.Use(middleware.RLS()) // injects current_user_id into context
 
 	// register routes and pass deps
