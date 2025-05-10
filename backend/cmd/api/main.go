@@ -8,6 +8,7 @@ import (
 	"github.com/mavrw/farm-rest-rpg/backend/config"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/auth"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/db"
+	"github.com/mavrw/farm-rest-rpg/backend/internal/farm"
 	"github.com/mavrw/farm-rest-rpg/backend/pkg/middleware"
 )
 
@@ -34,12 +35,12 @@ func main() {
 	public := router.Group("/api/v1")
 	auth.RegisterRoutes(public, dbPool, cfg.Auth)
 
-	// --- PRIVATE ROUTES ---
-	private := router.Group("/api/v1")
-	private.Use(middleware.AuthMiddleware(cfg.Auth.JWTSecret))
-	private.Use(middleware.RLS()) // injects current_user_id into context
+	// --- PROTECTED ROUTES ---
+	protected := router.Group("/api/v1")
+	protected.Use(middleware.AuthMiddleware(cfg.Auth.JWTSecret))
+	protected.Use(middleware.RLS()) // injects current_user_id into context
 
-	// farm.RegisterRoutes(protected, dbPool)
+	farm.RegisterRoutes(protected, dbPool)
 
 	// start the server
 	addr := ":" + cfg.Server.Port
