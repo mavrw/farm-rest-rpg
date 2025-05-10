@@ -21,6 +21,7 @@ var (
 	ErrUserNotFound        = errors.New("user not found")
 	ErrInvalidCredentials  = errors.New("invalid credentials")
 	ErrEmailAlreadyExists  = errors.New("email already registered")
+	ErrUsernameTaken       = errors.New("username is taken")
 	ErrTokenAlreadyRevoked = errors.New("token already revoked")
 )
 
@@ -36,11 +37,19 @@ func NewAuthService(q *repository.Queries, jwtSecret string) *AuthService {
 }
 
 func (s *AuthService) Register(ctx context.Context, in RegisterInput) error {
-	// TODO: add db level constraint for added protection
-	// Check if user already exists
+	// Check if email already exists
 	_, err := s.q.GetUserByEmail(ctx, in.Email)
 	if err == nil {
 		return ErrEmailAlreadyExists
+	}
+	if err != nil && err != sql.ErrNoRows {
+		return err
+	}
+
+	// Check if username is already taken
+	_, err = s.q.GetUserByUsername(ctx, in.Username)
+	if err == nil {
+		return ErrUsernameTaken
 	}
 	if err != nil && err != sql.ErrNoRows {
 		return err
