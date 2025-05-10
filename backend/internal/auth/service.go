@@ -18,8 +18,10 @@ const (
 )
 
 var (
-	ErrUserNotFound       = errors.New("user not found")
-	ErrInvalidCredentials = errors.New("invalid credentials")
+	ErrUserNotFound        = errors.New("user not found")
+	ErrInvalidCredentials  = errors.New("invalid credentials")
+	ErrEmailAlreadyExists  = errors.New("email already registered")
+	ErrTokenAlreadyRevoked = errors.New("token already revoked")
 )
 
 type AuthService struct {
@@ -27,11 +29,23 @@ type AuthService struct {
 	secret string
 }
 
+// TODO: Implement CSRF protection
+
 func NewAuthService(q *repository.Queries, jwtSecret string) *AuthService {
 	return &AuthService{q: q, secret: jwtSecret}
 }
 
 func (s *AuthService) Register(ctx context.Context, in RegisterInput) error {
+	// TODO: add db level constraint for added protection
+	// Check if user already exists
+	_, err := s.q.GetUserByEmail(ctx, in.Email)
+	if err == nil {
+		return ErrEmailAlreadyExists
+	}
+	if err != nil && err != sql.ErrNoRows {
+		return err
+	}
+
 	ph, err := hashPassword(in.Password)
 	if err != nil {
 		return err
@@ -47,20 +61,37 @@ func (s *AuthService) Register(ctx context.Context, in RegisterInput) error {
 }
 
 // Login user and issue JWT
-func (s *AuthService) Login(ctx context.Context, in LoginInput) (string, error) {
+func (s *AuthService) Login(ctx context.Context, in LoginInput) (string, string, error) {
 	user, err := s.q.GetUserByEmail(ctx, in.Email)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return "", ErrUserNotFound
+			return "", "", ErrUserNotFound
 		}
-		return "", err
+		return "", "", err
 	}
 
 	if err := checkPassword(in.Password, user.PasswordHash); err != nil {
-		return "", ErrInvalidCredentials
+		return "", "", ErrInvalidCredentials
 	}
 
-	return jwtutil.Sign(user.ID, jwtutil.TokenCfg{Secret: s.secret})
+	accessToken, err := jwtutil.Sign(user.ID, jwtutil.TokenCfg{Secret: s.secret})
+	if err != nil {
+		return "", "", err
+	}
+
+	refreshToken := uuid.NewString()
+	expires := time.Now().Add(RefreshTokenExpiryHours)
+
+	_, err = s.q.CreateRefreshToken(ctx, repository.CreateRefreshTokenParams{
+		UserID:    user.ID,
+		Token:     refreshToken,
+		ExpiresAt: expires,
+	})
+	if err != nil {
+		return "", "", nil
+	}
+
+	return accessToken, refreshToken, nil
 }
 
 func (s *AuthService) Refresh(ctx context.Context, token string) (string, string, error) {
@@ -96,6 +127,8 @@ func (s *AuthService) Refresh(ctx context.Context, token string) (string, string
 }
 
 func (s *AuthService) RevokeRefreshToken(ctx context.Context, token string) error {
+	// TODO: Return ErrTokenAlreadyRevoked if token has already be revoked
+
 	return s.q.RevokeRefreshToken(ctx, token)
 }
 
@@ -113,8 +146,8 @@ func hashPassword(password string) (string, error) {
 
 func checkPassword(password, passwordHash string) error {
 	err := bcrypt.CompareHashAndPassword(
-		[]byte(password),
 		[]byte(passwordHash),
+		[]byte(password),
 	)
 	if err != nil {
 		return err

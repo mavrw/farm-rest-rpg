@@ -18,17 +18,16 @@ func NewAuthHandler(svc *AuthService) *AuthHandler {
 	return &AuthHandler{svc: svc}
 }
 
-func RegisterRoutes(r *gin.Engine, pool *pgxpool.Pool, cfg config.AuthConfig) {
+func RegisterRoutes(r *gin.RouterGroup, pool *pgxpool.Pool, cfg config.AuthConfig) {
 	q := repository.New(pool)
 
 	svc := NewAuthService(q, cfg.JWTSecret)
 	h := NewAuthHandler(svc)
 
-	grp := r.Group("/api/v1/auth")
-	grp.POST("/register", h.Register)
-	grp.POST("/login", h.Login)
-	grp.POST("/refresh", h.Refresh)
-	grp.POST("/logout", h.Logout)
+	r.POST("/auth/register", h.Register)
+	r.POST("/auth/login", h.Login)
+	r.POST("/auth/refresh", h.Refresh)
+	r.POST("/auth/logout", h.Logout)
 }
 
 func (h *AuthHandler) Register(c *gin.Context) {
@@ -51,13 +50,14 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := h.svc.Login(c.Request.Context(), in)
+	accessToken, refreshToken, err := h.svc.Login(c.Request.Context(), in)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	cookieutil.SetRefreshCookie(c, refreshToken, RefreshTokenExpiryHours)
+	c.JSON(http.StatusOK, gin.H{"token": accessToken})
 }
 
 func (h *AuthHandler) Refresh(c *gin.Context) {

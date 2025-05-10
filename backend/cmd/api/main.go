@@ -25,15 +25,21 @@ func main() {
 	}
 	defer dbPool.Close()
 
-	// create router and register middleware
+	// create router and register general middleware
 	router := gin.Default()
 	router.Use(middleware.RequestLogger())
 	// router.Use(middleware.CORSMiddleWare())
-	router.Use(middleware.AuthMiddleware(cfg.Auth.JWTSecret))
-	router.Use(middleware.RLS()) // injects current_user_id into context
 
-	// register routes and pass deps
-	auth.RegisterRoutes(router, dbPool, cfg.Auth)
+	// --- PUBLIC ROUTES ---
+	public := router.Group("/api/v1")
+	auth.RegisterRoutes(public, dbPool, cfg.Auth)
+
+	// --- PRIVATE ROUTES ---
+	private := router.Group("/api/v1")
+	private.Use(middleware.AuthMiddleware(cfg.Auth.JWTSecret))
+	private.Use(middleware.RLS()) // injects current_user_id into context
+
+	// farm.RegisterRoutes(protected, dbPool)
 
 	// start the server
 	addr := ":" + cfg.Server.Port
