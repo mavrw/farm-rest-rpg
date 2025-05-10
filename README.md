@@ -121,7 +121,7 @@ From the project root:
   - Apply locally with `make migrate` (or `make up`, the `migrate` service is a dependency for `backend`)
 - **SQLC Models**
 
-  - Define SQL queries in `backend/internal/db/queries/`
+  - Define SQL queries in `backend/queries/`
   - Regenerate with `cd backend && sqlc generate`
 - **Frontend**
 
