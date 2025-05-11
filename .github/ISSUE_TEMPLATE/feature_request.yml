@@ -1,0 +1,49 @@
+name: Feature Request
+description: Create a feature or task for the Farm REST RPG.
+title: "[Feature] "
+labels:
+  - "backend"
+  - "frontend"
+  - "devops"
+  - "database"
+  - "game design"
+  - "docs"
+assignees:
+  - mavrw
+projects:
+  - "mavrw/farm-rest-rpg#Farm REST RPG Tracker"
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please fill out the sections below. Fields in **bold** will be used to populate your Project item.
+
+  - id: area
+    type: dropdown
+    attributes:
+      label: Area
+      description: Which code area?
+      options:
+        - Frontend
+        - Backend
+        - DevOps
+        - Database
+        - Game Design
+        - Docs
+
+  - id: priority
+    type: dropdown
+    attributes:
+      label: Priority
+      options:
+        - Low
+        - Medium
+        - High
+        - Urgent
+
+  - id: notes
+    type: textarea
+    attributes:
+      label: Notes / Acceptance Criteria
+      description: Add any checklists, links, or context here.

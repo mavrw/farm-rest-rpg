@@ -1,0 +1,56 @@
+name: Task
+description: Add a technical task or internal improvement.
+title: "[Task] "
+labels:
+  - "backend"
+  - "frontend"
+  - "devops"
+  - "database"
+  - "game design"
+  - "docs"
+  - "chore"
+assignees:
+  - mavrw
+projects:
+  - "mavrw/farm-rest-rpg#Farm REST RPG Tracker"
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For internal tasks, refactors, infrastructure changes, or other dev work.
+
+  - id: area
+    type: dropdown
+    attributes:
+      label: Area
+      description: What part of the system does this affect?
+      options:
+        - Frontend
+        - Backend
+        - DevOps
+        - Database
+        - Game Design
+        - Docs
+
+  - id: priority
+    type: dropdown
+    attributes:
+      label: Priority
+      options:
+        - Low
+        - Medium
+        - High
+        - Urgent
+
+  - id: description
+    type: textarea
+    attributes:
+      label: What needs to be done?
+      description: Brief summary of the work.
+
+  - id: notes
+    type: textarea
+    attributes:
+      label: Additional notes
+      description: Any background, checklists, or related links.

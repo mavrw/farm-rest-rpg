@@ -1,0 +1,56 @@
+name: Bug Report
+description: Report a bug in the Farm REST RPG.
+title: "[Bug] "
+labels:
+  - "bug"
+  - "backend"
+  - "frontend"
+  - "devops"
+  - "database"
+  - "game design"
+  - "docs"
+assignees:
+  - mavrw
+projects:
+  - "mavrw/farm-rest-rpg#Farm REST RPG Tracker"
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please fill out the sections below. Fields in **bold** will be used to populate your Project item.
+
+  - id: area
+    type: dropdown
+    attributes:
+      label: Area
+      description: Which code area is affected?
+      options:
+        - Frontend
+        - Backend
+        - DevOps
+        - Database
+        - Game Design
+        - Docs
+
+  - id: priority
+    type: dropdown
+    attributes:
+      label: Priority
+      options:
+        - Low
+        - Medium
+        - High
+        - Urgent
+
+  - id: description
+    type: textarea
+    attributes:
+      label: What happened?
+      description: Describe the bug, including steps to reproduce and expected vs actual results.
+
+  - id: notes
+    type: textarea
+    attributes:
+      label: Notes / Workarounds
+      description: Add logs, screenshots, or temporary fixes you’ve tried.
