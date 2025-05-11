@@ -9,7 +9,7 @@ A monorepo for a text-based farming RPG game, featuring:
 - **Docker Compose** for local development  
 - **Terraform** stubs for AWS IaC  
 
-> 📄 The detailed design document has been renamed to [`DESIGN-DOC.md`](./DESIGN-DOC.md).
+> 📄 The detailed design document has been renamed to [`DESIGN-DOC.md`](./docs/DESIGN-DOC.md).
 
 ---
 
