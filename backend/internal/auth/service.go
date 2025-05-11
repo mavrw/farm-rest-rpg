@@ -2,11 +2,11 @@ package auth
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/repository"
 	"github.com/mavrw/farm-rest-rpg/backend/pkg/jwtutil"
 	"golang.org/x/crypto/bcrypt"
@@ -38,21 +38,21 @@ func NewAuthService(q *repository.Queries, jwtSecret string) *AuthService {
 
 func (s *AuthService) Register(ctx context.Context, in RegisterInput) error {
 	// Check if email already exists
-	_, err := s.q.GetUserByEmail(ctx, in.Email)
-	if err == nil {
+	if _, err := s.q.GetUserByEmail(ctx, in.Email); err != nil {
+		if err != pgx.ErrNoRows {
+			return err
+		}
+	} else {
 		return ErrEmailAlreadyExists
-	}
-	if err != nil && err != sql.ErrNoRows {
-		return err
 	}
 
 	// Check if username is already taken
-	_, err = s.q.GetUserByUsername(ctx, in.Username)
-	if err == nil {
+	if _, err := s.q.GetUserByUsername(ctx, in.Username); err != nil {
+		if err != pgx.ErrNoRows {
+			return err
+		}
+	} else {
 		return ErrUsernameTaken
-	}
-	if err != nil && err != sql.ErrNoRows {
-		return err
 	}
 
 	ph, err := hashPassword(in.Password)
@@ -73,7 +73,7 @@ func (s *AuthService) Register(ctx context.Context, in RegisterInput) error {
 func (s *AuthService) Login(ctx context.Context, in LoginInput) (string, string, error) {
 	user, err := s.q.GetUserByEmail(ctx, in.Email)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == pgx.ErrNoRows {
 			return "", "", ErrUserNotFound
 		}
 		return "", "", err
@@ -83,7 +83,10 @@ func (s *AuthService) Login(ctx context.Context, in LoginInput) (string, string,
 		return "", "", ErrInvalidCredentials
 	}
 
-	accessToken, err := jwtutil.Sign(user.ID, jwtutil.TokenCfg{Secret: s.secret})
+	accessToken, err := jwtutil.Sign(user.ID, jwtutil.TokenCfg{
+		Secret: s.secret,
+		TTL:    AuthTokenExpiryHours,
+	})
 	if err != nil {
 		return "", "", err
 	}

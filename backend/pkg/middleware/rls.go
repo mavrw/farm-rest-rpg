@@ -14,8 +14,8 @@ const userIDKey ctxKey = "current_user_id"
 // inject current_user_id from Gin into standard ctx
 func RLS() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if uid, ok := c.Get("userID"); ok {
-			ctx := context.WithValue(c.Request.Context(), userIDKey, uid.(int32))
+		if uid, ok := c.Get(ContextUserIDKey); ok {
+			ctx := context.WithValue(c.Request.Context(), userIDKey, uid.(int))
 			c.Request = c.Request.WithContext(ctx)
 		}
 		c.Next()
@@ -24,7 +24,7 @@ func RLS() gin.HandlerFunc {
 
 func PGXBeforeAcquire(ctx context.Context, conn *pgx.Conn) bool {
 	if v := ctx.Value(userIDKey); v != nil {
-		conn.Exec(ctx, "SELECT util.set_current_user_id($1)", v.(int32))
+		conn.Exec(ctx, "SELECT util.set_current_user_id($1)", v.(int))
 	}
 	return true
 }

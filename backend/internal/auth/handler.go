@@ -37,7 +37,13 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		return
 	}
 	if err := h.svc.Register(c.Request.Context(), in); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		switch err {
+		case ErrEmailAlreadyExists, ErrUsernameTaken:
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+
+		}
 		return
 	}
 	c.Status(http.StatusCreated)

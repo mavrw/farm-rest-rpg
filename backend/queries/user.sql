@@ -8,6 +8,6 @@ FROM "user"
 WHERE email = $1;
 
 -- name: GetUserByUsername :one
-SELECT * 
+SELECT id, username, email, password_hash, created_at, updated_at
 FROM "user" 
 WHERE username = $1;

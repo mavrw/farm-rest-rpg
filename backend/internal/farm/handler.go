@@ -46,6 +46,7 @@ func (h *FarmHandler) GetFarm(c *gin.Context) {
 
 func (h *FarmHandler) CreateFarm(c *gin.Context) {
 	userId := c.GetInt(middleware.ContextUserIDKey)
+
 	var in CreateFarmInput
 	if err := c.ShouldBindJSON(&in); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

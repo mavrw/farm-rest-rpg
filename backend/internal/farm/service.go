@@ -2,9 +2,9 @@ package farm
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/repository"
 )
 
@@ -23,7 +23,7 @@ func NewFarmService(q *repository.Queries) *FarmService {
 
 func (s *FarmService) Get(ctx context.Context, userId int32) (*repository.Farm, error) {
 	farm, err := s.q.GetFarmByUserID(ctx, userId)
-	if err == sql.ErrNoRows {
+	if err == pgx.ErrNoRows {
 		return nil, ErrFarmNotFound
 	}
 
@@ -35,7 +35,7 @@ func (s *FarmService) Create(ctx context.Context, userID int32, in CreateFarmInp
 	if err == nil {
 		return nil, ErrFarmAlreadyExists
 	}
-	if err != sql.ErrNoRows {
+	if err != pgx.ErrNoRows {
 		return nil, err
 	}
 

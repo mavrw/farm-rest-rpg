@@ -40,7 +40,11 @@ func AuthMiddleware(secret string) gin.HandlerFunc {
 			return
 		}
 
-		c.Set(ContextUserIDKey, int32(userID))
+		// ! This broke when casting userID to int32
+		// ! I believe it's because under the hood, Gin makes a type
+		// ! assertion to int when we later call `gin.Context.GetInt`
+		// ! which would fail when this value was set as int32.
+		c.Set(ContextUserIDKey, int(userID))
 		c.Next()
 	}
 }

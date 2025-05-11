@@ -46,7 +46,7 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 }
 
 const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT id, username, email, password_hash, created_at, updated_at 
+SELECT id, username, email, password_hash, created_at, updated_at
 FROM "user" 
 WHERE username = $1
 `
