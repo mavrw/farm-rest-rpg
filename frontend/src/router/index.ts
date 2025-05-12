@@ -4,6 +4,7 @@ import type { RouteRecordRaw } from "vue-router";
 import HomeView from "@/views/HomeView.vue";
 import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
+import FarmView from "@/views/FarmView.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -20,6 +21,11 @@ const routes: RouteRecordRaw[] = [
     path: '/register',
     name: 'Register',
     component: RegisterView,
+  },
+  {
+    path: '/farm',
+    name: 'Farm',
+    component: FarmView,
   },
 ];
 
