@@ -1,21 +1,21 @@
 import api from '@/api'
 
-interface RegisterPayload {
+export interface RegisterPayload {
     email: string,
     username: string,
     password: string
 }
 
-interface LoginPayload {
+export interface LoginPayload {
     email: string,
     password: string
 }
 
-interface RegisterResponse {
+export interface RegisterResponse {
     message: string
 }
 
-interface AuthResponse {
+export interface AuthResponse {
     access_token: string,
     refresh_token?: string
 }
