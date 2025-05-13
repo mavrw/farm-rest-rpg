@@ -1,15 +1,23 @@
 <template>
     <div class="home">
         <h1>Welcome to FarmRestRPG</h1>
-        <p>
-            This is the central hub.
-        </p>
-        <RouterLink to="/farm">Go to your farm</RouterLink>
+        <div v-if="isAuthenticated">
+            <p>Glad to have you back!</p>
+            <RouterLink to="/farm">Go to your farm</RouterLink>
+        </div>
+        <div v-else>
+            <p>
+                Please <RouterLink to="/login">log in</RouterLink> or <RouterLink to="/register">register</RouterLink>.
+            </p>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import { useAuthStore } from "@/stores/authStore";
 
+const authStore = useAuthStore();
+const isAuthenticated = authStore.isAuthenticated;
 </script>
 
 <style scoped>

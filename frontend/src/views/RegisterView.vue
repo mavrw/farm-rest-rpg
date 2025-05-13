@@ -23,8 +23,8 @@
 
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { register } from "../api/auth";
-import type { RegisterPayload } from "../api/auth";
+import { register } from "@/api/auth";
+import type { RegisterPayload } from "@/api/auth";
 
 const email = ref('');
 const username =  ref('');

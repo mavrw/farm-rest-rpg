@@ -18,8 +18,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useAuthStore } from "../stores/authStore";
-import type { LoginPayload } from "../api/auth";
+import { useAuthStore } from "@/stores/authStore";
+import type { LoginPayload } from "@/api/auth";
 
 const email = ref('');
 const password = ref('');
