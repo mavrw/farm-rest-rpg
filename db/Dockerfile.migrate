@@ -9,5 +9,10 @@ COPY . /db
 
 WORKDIR /db
 
-# default command can be overriden in compose if you like
-ENTRYPOINT ["bash", "-c", "goose up && echo 'Migration Completed' > /tmp/.migrated && sleep 20"]
+# default command can be overriden in compose
+ENTRYPOINT ["bash", "-c", "\
+    goose up && \
+    touch /tmp/.migrated && \
+    echo 'Migration Completed'; \
+    sleep 60 \
+"]

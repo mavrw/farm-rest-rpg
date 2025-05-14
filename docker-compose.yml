@@ -25,6 +25,22 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+  
+  db_seed:
+    depends_on:
+      migrate:
+        condition: service_healthy
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.db_seed
+    env_file:
+      - ./devops/.env
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/.seeded"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   backend:
     build:
@@ -38,6 +54,8 @@ services:
       db:
         condition: service_healthy
       migrate:
+        condition: service_healthy
+      db_seed:
         condition: service_healthy
 
   frontend:

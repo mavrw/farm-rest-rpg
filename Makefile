@@ -1,4 +1,4 @@
-.PHONY: help up down downv migrate build-backend build-frontend test logs
+.PHONY: help up down downv migrate seed build-backend build-frontend test logs
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -15,6 +15,10 @@ downv:             ## Tear down all services and volumes
 
 migrate:
 	docker compose up migrate --build -d
+
+seed:
+	docker compose up db_seed --build -d
+
 
 build-backend:    ## Build only the backend image
 	docker compose build backend

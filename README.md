@@ -103,8 +103,9 @@ From the project root:
 | --------------------------------- | --------------------------------------------------------------------- |
 | `make up`                         | Build images & start all services (db, backend, frontend, nginx)      |
 | `make down`                       | Stop & remove all containers                                          |
-| `make downv`                       | Stop & remove all containers and volumes                                          |
+| `make downv`                      | Stop & remove all containers and volumes                              |
 | `make migrate`                    | Starts db & runs migrate service                                      |
+| `make seed`                       | Starts db, runs migrate service, & seeds database via seeder binary   |
 | `make build-backend`              | Build only the backend Docker image                                   |
 | `make build-frontend`             | Build only the frontend Docker image                                  |
 | `make test`                       | Run backend tests (requires `db` up)                                  |
