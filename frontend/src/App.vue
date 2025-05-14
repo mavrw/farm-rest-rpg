@@ -18,12 +18,13 @@
 
 <script setup lang="ts">
 import { useAuthStore } from "@/stores/authStore";
+import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
 const router = useRouter();
 
-const isAuthenticated = authStore.isAuthenticated;
+const { isAuthenticated } = storeToRefs(authStore);
 
 const logout = async () => {
   await authStore.logout();

@@ -1,14 +1,16 @@
+import { useAuthStore } from '@/stores/authStore';
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api',
+    baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api/v1',
     withCredentials: true,
 });
 
+
 api.interceptors.request.use(
     (config) => {
-        // TODO: move token storage to pinia
-        const token = localStorage.getItem('access_token')
+        const authStore = useAuthStore();
+        const token = authStore.accessToken;
         if (token) {
             config.headers.Authorization = `Bearer ${token}`
         }

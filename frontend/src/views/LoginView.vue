@@ -8,7 +8,7 @@
             </div>
             <div>
                 <label for="password">Password</label>
-                <input v-model="password" type="email" id="email" required />
+                <input v-model="password" type="password" id="email" required />
             </div>
             <button type="submit" :disabled="isSubmitting">Login</button>
         </form>

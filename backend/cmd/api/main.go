@@ -2,7 +2,9 @@ package main
 
 import (
 	"log"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
 	"github.com/mavrw/farm-rest-rpg/backend/config"
@@ -29,7 +31,14 @@ func main() {
 	// create router and register general middleware
 	router := gin.Default()
 	router.Use(middleware.RequestLogger())
-	// router.Use(middleware.CORSMiddleWare())
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	// --- PUBLIC ROUTES ---
 	public := router.Group("/api/v1")

@@ -15,9 +15,10 @@
 
 <script setup lang="ts">
 import { useAuthStore } from "@/stores/authStore";
+import { storeToRefs } from "pinia";
 
 const authStore = useAuthStore();
-const isAuthenticated = authStore.isAuthenticated;
+const { isAuthenticated } = storeToRefs(authStore);
 </script>
 
 <style scoped>
