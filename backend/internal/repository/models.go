@@ -11,11 +11,10 @@ import (
 )
 
 type Crop struct {
-	ID          int32
-	Name        string
-	GrowthTime  int32
-	YieldAmount int32
-	Season      string
+	ID                int32
+	Name              string
+	GrowthTimeSeconds int32
+	YieldAmount       int32
 }
 
 type Farm struct {
@@ -43,11 +42,9 @@ type Item struct {
 type Plot struct {
 	ID        int32
 	FarmID    int32
-	X         int32
-	Y         int32
-	SoilType  string
 	CropID    int32
 	PlantedAt *time.Time
+	HarvestAt *time.Time
 }
 
 type RefreshToken struct {
