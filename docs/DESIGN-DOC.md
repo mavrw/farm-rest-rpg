@@ -151,6 +151,7 @@ plot
 - soil_type
 - crop_id (FK to crops, nullable)
 - planted_at
+- harvest_at
 ```
 
 #### Crops
@@ -227,7 +228,6 @@ animals
 - `GET  /api/v1/farm`  
 - `POST /api/v1/plot/plant`  
 - `POST /api/v1/plot/harvest`  
-- `POST /api/v1/animal/feed`  
 - `GET  /api/v1/inventory`  
 - `POST /api/v1/market/buy`  
 - `POST /api/v1/market/sell`  
