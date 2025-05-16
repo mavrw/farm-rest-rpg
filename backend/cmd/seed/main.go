@@ -28,7 +28,8 @@ func main() {
 
 	q := repository.New(pool)
 
-	for _, crop := range db_seed.InitialCrops {
+	for idx, crop := range db_seed.InitialCrops {
+		crop.ID = int32(idx)
 		if err := q.CreateCrop(ctx, crop); err != nil {
 			log.Printf("failed to seed crop %+v: %v", crop, err)
 		}

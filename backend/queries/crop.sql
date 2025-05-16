@@ -1,6 +1,6 @@
 -- name: CreateCrop :exec
-INSERT INTO "crop" (name, growth_time_seconds, yield_amount)
-VALUES ($1, $2, $3)
+INSERT INTO "crop" (id, name, growth_time_seconds, yield_amount)
+VALUES ($1, $2, $3, $4)
 ON CONFLICT (id) DO NOTHING;
 
 -- name: GetAllCrops :many

@@ -10,19 +10,25 @@ import (
 )
 
 const createCrop = `-- name: CreateCrop :exec
-INSERT INTO "crop" (name, growth_time_seconds, yield_amount)
-VALUES ($1, $2, $3)
+INSERT INTO "crop" (id, name, growth_time_seconds, yield_amount)
+VALUES ($1, $2, $3, $4)
 ON CONFLICT (id) DO NOTHING
 `
 
 type CreateCropParams struct {
+	ID                int32
 	Name              string
 	GrowthTimeSeconds int32
 	YieldAmount       int32
 }
 
 func (q *Queries) CreateCrop(ctx context.Context, arg CreateCropParams) error {
-	_, err := q.db.Exec(ctx, createCrop, arg.Name, arg.GrowthTimeSeconds, arg.YieldAmount)
+	_, err := q.db.Exec(ctx, createCrop,
+		arg.ID,
+		arg.Name,
+		arg.GrowthTimeSeconds,
+		arg.YieldAmount,
+	)
 	return err
 }
 
