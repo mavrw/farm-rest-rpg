@@ -3,7 +3,7 @@
 
 CREATE TABLE "refresh_token" (
   id            UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id       INTEGER     REFERENCES "user"(id) ON DELETE CASCADE,
+  user_id       INTEGER     REFERENCES "user"(id) ON DELETE CASCADE NOT NULL,
   token         TEXT        NOT NULL UNIQUE,
   expires_at    TIMESTAMPTZ NOT NULL,
   revoked       BOOLEAN     DEFAULT FALSE,

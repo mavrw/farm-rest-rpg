@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/repository"
+	"github.com/mavrw/farm-rest-rpg/backend/pkg/errs"
 	"github.com/mavrw/farm-rest-rpg/backend/pkg/middleware"
 )
 
@@ -32,7 +33,7 @@ func (h *FarmHandler) GetFarm(c *gin.Context) {
 
 	farm, err := h.svc.Get(c.Request.Context(), int32(userId))
 	if err != nil {
-		if err == ErrFarmNotFound {
+		if err == errs.ErrFarmNotFound {
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 			return
 		}
@@ -55,7 +56,7 @@ func (h *FarmHandler) CreateFarm(c *gin.Context) {
 
 	farm, err := h.svc.Create(c.Request.Context(), int32(userId), in)
 	if err != nil {
-		if err == ErrFarmAlreadyExists {
+		if err == errs.ErrFarmAlreadyExists {
 			c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 			return
 		}

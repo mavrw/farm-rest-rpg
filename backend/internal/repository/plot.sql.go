@@ -29,8 +29,29 @@ func (q *Queries) CreatePlot(ctx context.Context, farmID int32) (Plot, error) {
 	return i, err
 }
 
+const getPlotByID = `-- name: GetPlotByID :one
+SELECT id, farm_id, crop_id, planted_at, harvest_at 
+FROM "plot" 
+WHERE id = $1
+`
+
+func (q *Queries) GetPlotByID(ctx context.Context, id int32) (Plot, error) {
+	row := q.db.QueryRow(ctx, getPlotByID, id)
+	var i Plot
+	err := row.Scan(
+		&i.ID,
+		&i.FarmID,
+		&i.CropID,
+		&i.PlantedAt,
+		&i.HarvestAt,
+	)
+	return i, err
+}
+
 const getPlotsByFarmID = `-- name: GetPlotsByFarmID :many
-SELECT id, farm_id, crop_id, planted_at, harvest_at FROM "plot" WHERE farm_id = $1
+SELECT id, farm_id, crop_id, planted_at, harvest_at
+FROM "plot" 
+WHERE farm_id = $1
 `
 
 func (q *Queries) GetPlotsByFarmID(ctx context.Context, farmID int32) ([]Plot, error) {
@@ -59,20 +80,29 @@ func (q *Queries) GetPlotsByFarmID(ctx context.Context, farmID int32) ([]Plot, e
 	return items, nil
 }
 
-const harvestPlotByID = `-- name: HarvestPlotByID :exec
+const harvestPlotByID = `-- name: HarvestPlotByID :one
 UPDATE "plot"
 SET crop_id = NULL,
     planted_at = NULL,
     harvest_at = NULL
 WHERE id = $1
+RETURNING id, farm_id, crop_id, planted_at, harvest_at
 `
 
-func (q *Queries) HarvestPlotByID(ctx context.Context, id int32) error {
-	_, err := q.db.Exec(ctx, harvestPlotByID, id)
-	return err
+func (q *Queries) HarvestPlotByID(ctx context.Context, id int32) (Plot, error) {
+	row := q.db.QueryRow(ctx, harvestPlotByID, id)
+	var i Plot
+	err := row.Scan(
+		&i.ID,
+		&i.FarmID,
+		&i.CropID,
+		&i.PlantedAt,
+		&i.HarvestAt,
+	)
+	return i, err
 }
 
-const sowPlotByIDWithCrop = `-- name: SowPlotByIDWithCrop :one
+const sowPlotByID = `-- name: SowPlotByID :one
 UPDATE "plot"
 SET crop_id = $2,
     planted_at = $3,
@@ -81,15 +111,15 @@ WHERE id = $1
 RETURNING id, farm_id, crop_id, planted_at, harvest_at
 `
 
-type SowPlotByIDWithCropParams struct {
+type SowPlotByIDParams struct {
 	ID        int32
-	CropID    int32
-	PlantedAt *time.Time
-	HarvestAt *time.Time
+	CropID    *int32
+	PlantedAt time.Time
+	HarvestAt time.Time
 }
 
-func (q *Queries) SowPlotByIDWithCrop(ctx context.Context, arg SowPlotByIDWithCropParams) (Plot, error) {
-	row := q.db.QueryRow(ctx, sowPlotByIDWithCrop,
+func (q *Queries) SowPlotByID(ctx context.Context, arg SowPlotByIDParams) (Plot, error) {
+	row := q.db.QueryRow(ctx, sowPlotByID,
 		arg.ID,
 		arg.CropID,
 		arg.PlantedAt,

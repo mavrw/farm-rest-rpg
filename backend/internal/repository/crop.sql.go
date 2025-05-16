@@ -56,3 +56,21 @@ func (q *Queries) GetAllCrops(ctx context.Context) ([]Crop, error) {
 	}
 	return items, nil
 }
+
+const getCropByID = `-- name: GetCropByID :one
+SELECT id, name, growth_time_seconds, yield_amount
+FROM "crop"
+WHERE id = $1
+`
+
+func (q *Queries) GetCropByID(ctx context.Context, id int32) (Crop, error) {
+	row := q.db.QueryRow(ctx, getCropByID, id)
+	var i Crop
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.GrowthTimeSeconds,
+		&i.YieldAmount,
+	)
+	return i, err
+}

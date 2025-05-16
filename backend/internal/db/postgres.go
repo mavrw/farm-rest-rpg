@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/mavrw/farm-rest-rpg/backend/config"
 	"github.com/mavrw/farm-rest-rpg/backend/pkg/middleware"
@@ -38,4 +39,10 @@ func Connect(cfg config.DBConfig) (*pgxpool.Pool, error) {
 	}
 
 	return pool, nil
+}
+
+func AutoRollbackTx(ctx context.Context, tx pgx.Tx, err *error) {
+	if *err != nil {
+		_ = tx.Rollback(ctx)
+	}
 }

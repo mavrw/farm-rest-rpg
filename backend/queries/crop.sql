@@ -7,3 +7,8 @@ ON CONFLICT (id) DO NOTHING;
 SELECT * 
 FROM "crop"
 ORDER BY id;
+
+-- name: GetCropByID :one
+SELECT *
+FROM "crop"
+WHERE id = $1;
