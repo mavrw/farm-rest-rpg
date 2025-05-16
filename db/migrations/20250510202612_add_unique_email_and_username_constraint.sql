@@ -1,9 +1,9 @@
 -- +goose Up
 -- +goose StatementBegin
-ALTER TABLE "user"
+ALTER TABLE "users"
 ADD CONSTRAINT unique_email UNIQUE (email);
 
-ALTER TABLE "user"
+ALTER TABLE "users"
 ADD CONSTRAINT unique_username UNIQUE (username);
 -- +goose StatementEnd
 

@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE "inventory" (
     "id"    SERIAL  PRIMARY KEY,
-    "user_id"   INTEGER REFERENCES "user"(id)   NOT NULL,
+    "user_id"   INTEGER REFERENCES "users"(id)   NOT NULL,
     "item_id"   INTEGER REFERENCES "item"(id)   NOT NULL,
     "quantity"  INTEGER NOT NULL
 );

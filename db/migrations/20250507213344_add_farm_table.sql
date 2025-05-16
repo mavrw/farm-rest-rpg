@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE "farm" (
     "id"            SERIAL      PRIMARY KEY,
-    "user_id"       INTEGER     REFERENCES "user"(id) NOT NULL,
+    "user_id"       INTEGER     REFERENCES "users"(id) NOT NULL,
     "name"          TEXT        NOT NULL,
     "created_at"    TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at"    TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP

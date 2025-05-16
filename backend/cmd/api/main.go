@@ -47,7 +47,7 @@ func main() {
 
 	// --- PROTECTED ROUTES ---
 	protected := router.Group("/api/v1")
-	protected.Use(middleware.AuthMiddleware(cfg.Auth.JWTSecret))
+	protected.Use(middleware.AuthMiddleware(cfg.Auth.JWTSecret, dbPool))
 	protected.Use(middleware.RLS()) // injects current_user_id into context
 
 	// TODO: Make routes for REST conformant

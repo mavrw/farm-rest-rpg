@@ -1,6 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE "user" (
+CREATE TABLE "users" (
     "id"            SERIAL      PRIMARY KEY,
     "username"      TEXT        NOT NULL,
     "email"         TEXT        DEFAULT NULL,
@@ -12,5 +12,5 @@ CREATE TABLE "user" (
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE "user";
+DROP TABLE "users";
 -- +goose StatementEnd
