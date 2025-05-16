@@ -6,8 +6,26 @@ import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import FarmView from "@/views/FarmView.vue";
 import { useAuthStore } from "@/stores/authStore";
+import AppLayout from "@/layouts/AppLayout.vue";
 
 const routes: RouteRecordRaw[] = [
+  {
+    path: "/",
+    component: AppLayout,
+    children: [
+      {
+        path: '/',
+        name: 'Home',
+        component: HomeView,
+      },
+      {
+        path: '/farm',
+        name: 'Farm',
+        component: FarmView,
+        meta: { requiresAuth: true },
+      },
+    ]
+  },
   {
     path: '/login',
     name: 'Login',
@@ -19,17 +37,6 @@ const routes: RouteRecordRaw[] = [
     name: 'Register',
     component: RegisterView,
     meta: { requiresGuest: true },
-  },
-  {
-    path: '/',
-    name: 'Home',
-    component: HomeView,
-  },
-  {
-    path: '/farm',
-    name: 'Farm',
-    component: FarmView,
-    meta: { requiresAuth: true },
   },
 ];
 
