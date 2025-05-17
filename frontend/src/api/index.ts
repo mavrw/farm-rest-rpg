@@ -24,7 +24,11 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     response => response,
     async (error) => {
-        if(error.response?.status === 401) {
+        if(
+            error.response?.status === 401 &&
+            !error.config.url?.startsWith('/auth/login') &&
+            !error.config.url?.startsWith('/auth/register')
+        ) {
             const authStore = useAuthStore();
 
             await authStore.logout();
