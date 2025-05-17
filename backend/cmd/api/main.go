@@ -12,6 +12,7 @@ import (
 	"github.com/mavrw/farm-rest-rpg/backend/internal/db"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/farm"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/plot"
+	"github.com/mavrw/farm-rest-rpg/backend/internal/user"
 	"github.com/mavrw/farm-rest-rpg/backend/pkg/middleware"
 )
 
@@ -51,6 +52,7 @@ func main() {
 	protected.Use(middleware.RLS()) // injects current_user_id into context
 
 	// TODO: Make routes for REST conformant
+	user.RegisterRoutes(protected, dbPool)
 	farm.RegisterRoutes(protected, dbPool)
 	plot.RegisterRoutes(protected, dbPool)
 

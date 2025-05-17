@@ -3,6 +3,14 @@ package errs
 import "errors"
 
 var (
+	ErrNotImplemented = errors.New("action not implemented")
+
+	ErrUserNotFound        = errors.New("user not found")
+	ErrInvalidCredentials  = errors.New("invalid credentials")
+	ErrEmailAlreadyExists  = errors.New("email already registered")
+	ErrUsernameTaken       = errors.New("username is taken")
+	ErrTokenAlreadyRevoked = errors.New("token already revoked")
+
 	ErrFarmNotFound       = errors.New("farm not found")
 	ErrFarmAlreadyExists  = errors.New("farm already exists")
 	ErrFarmNotOwnedByUser = errors.New("farm not owned by user")

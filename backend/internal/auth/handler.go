@@ -8,6 +8,7 @@ import (
 	"github.com/mavrw/farm-rest-rpg/backend/config"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/repository"
 	"github.com/mavrw/farm-rest-rpg/backend/pkg/cookieutil"
+	"github.com/mavrw/farm-rest-rpg/backend/pkg/errs"
 )
 
 type AuthHandler struct {
@@ -38,7 +39,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 	}
 	if err := h.svc.Register(c.Request.Context(), in); err != nil {
 		switch err {
-		case ErrEmailAlreadyExists, ErrUsernameTaken:
+		case errs.ErrEmailAlreadyExists, errs.ErrUsernameTaken:
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		default:
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

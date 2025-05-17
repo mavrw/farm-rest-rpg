@@ -2,12 +2,12 @@ package auth
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/repository"
+	"github.com/mavrw/farm-rest-rpg/backend/pkg/errs"
 	"github.com/mavrw/farm-rest-rpg/backend/pkg/jwtutil"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -15,14 +15,6 @@ import (
 const (
 	AuthTokenExpiryHours    = time.Hour * 24
 	RefreshTokenExpiryHours = time.Hour * 24 * 14
-)
-
-var (
-	ErrUserNotFound        = errors.New("user not found")
-	ErrInvalidCredentials  = errors.New("invalid credentials")
-	ErrEmailAlreadyExists  = errors.New("email already registered")
-	ErrUsernameTaken       = errors.New("username is taken")
-	ErrTokenAlreadyRevoked = errors.New("token already revoked")
 )
 
 type AuthService struct {
@@ -43,7 +35,7 @@ func (s *AuthService) Register(ctx context.Context, in RegisterInput) error {
 			return err
 		}
 	} else {
-		return ErrEmailAlreadyExists
+		return errs.ErrEmailAlreadyExists
 	}
 
 	// Check if username is already taken
@@ -52,7 +44,7 @@ func (s *AuthService) Register(ctx context.Context, in RegisterInput) error {
 			return err
 		}
 	} else {
-		return ErrUsernameTaken
+		return errs.ErrUsernameTaken
 	}
 
 	ph, err := hashPassword(in.Password)
@@ -74,13 +66,13 @@ func (s *AuthService) Login(ctx context.Context, in LoginInput) (string, string,
 	user, err := s.q.GetUserByEmail(ctx, in.Email)
 	if err != nil {
 		if err == pgx.ErrNoRows {
-			return "", "", ErrUserNotFound
+			return "", "", errs.ErrUserNotFound
 		}
 		return "", "", err
 	}
 
 	if err := checkPassword(in.Password, user.PasswordHash); err != nil {
-		return "", "", ErrInvalidCredentials
+		return "", "", errs.ErrInvalidCredentials
 	}
 
 	accessToken, err := jwtutil.Sign(user.ID, jwtutil.TokenCfg{
