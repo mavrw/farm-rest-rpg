@@ -1,3 +1,4 @@
+import router from '@/router';
 import { useAuthStore } from '@/stores/authStore';
 import axios from 'axios';
 
@@ -11,12 +12,28 @@ api.interceptors.request.use(
     (config) => {
         const authStore = useAuthStore();
         const token = authStore.accessToken;
+        console.log(authStore.accessToken);
         if (token) {
             config.headers.Authorization = `Bearer ${token}`
         }
         return config
     },
     (error) => Promise.reject(error)
+);
+
+api.interceptors.response.use(
+    response => response,
+    async (error) => {
+        if(error.response?.status === 401) {
+            const authStore = useAuthStore();
+
+            await authStore.logout();
+
+            router.push("/");
+        }
+
+        return Promise.reject(error);
+    }
 );
 
 export default api;

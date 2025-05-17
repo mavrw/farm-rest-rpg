@@ -1,15 +1,21 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { login as apiLogin, logout as apiLogout, refresh as apiRefresh } from "@/api/auth";
 import type { LoginPayload, AuthResponse } from "@/api/auth";
 
 export const useAuthStore = defineStore('auth', () => {
     // State
     const accessToken = ref<string | null>(localStorage.getItem('access_token'))
-    const isAuthenticated = ref(!!accessToken.value)
+    const isAuthenticated = computed(() => !!accessToken.value)
     
     // Helper Function
     const setAccessToken = (token: string) => {
+        if(!token) {
+            accessToken.value = null;
+            localStorage.removeItem('access_token');
+            return;
+        }
+
         accessToken.value = token
         localStorage.setItem('access_token', token)
     }
@@ -18,8 +24,12 @@ export const useAuthStore = defineStore('auth', () => {
     const login = async (payload: LoginPayload) => {
         const response = await apiLogin(payload)
         
+        if(!response.access_token) {
+            throw new Error('Access token missing from login response')
+        }
+
+        console.log('Login response: ', response)
         setAccessToken(response.access_token)
-        isAuthenticated.value = true
     }
     
     const logout = async () => {
@@ -30,7 +40,6 @@ export const useAuthStore = defineStore('auth', () => {
         }
         
         accessToken.value = null
-        isAuthenticated.value = false
         localStorage.removeItem('access_token')
     }
     

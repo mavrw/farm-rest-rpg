@@ -63,7 +63,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	}
 
 	cookieutil.SetRefreshCookie(c, refreshToken, RefreshTokenExpiryHours)
-	c.JSON(http.StatusOK, gin.H{"token": accessToken})
+	c.JSON(http.StatusOK, gin.H{"access_token": accessToken})
 }
 
 func (h *AuthHandler) Refresh(c *gin.Context) {
@@ -80,7 +80,7 @@ func (h *AuthHandler) Refresh(c *gin.Context) {
 	}
 
 	cookieutil.SetRefreshCookie(c, newRefresh, RefreshTokenExpiryHours)
-	c.JSON(http.StatusOK, gin.H{"token": accessToken})
+	c.JSON(http.StatusOK, gin.H{"access_token": accessToken})
 }
 
 func (h *AuthHandler) Logout(c *gin.Context) {
