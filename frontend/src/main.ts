@@ -13,6 +13,7 @@ app.use(pinia)
 app.use(router)
 
 const auth = useAuthStore();
+// TODO: implement a listener for window.load before mounting the app
 auth.fetchCurrentUser().finally(() => {
     app.mount('#app')
 });
