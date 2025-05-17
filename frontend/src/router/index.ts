@@ -49,9 +49,7 @@ router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
 
   // wait for pinia hydration
-  if (authStore.isAuthenticated === null) {
-    return next(false);
-  }
+  // TODO: check `ready` flag once implemented
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next({ name: 'Login' });

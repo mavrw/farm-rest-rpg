@@ -8,7 +8,7 @@
             </div>
             <div>
                 <label for="password">Password</label>
-                <input v-model="password" type="password" id="email" required />
+                <input v-model="password" type="password" id="password" required />
             </div>
             <button type="submit" :disabled="isSubmitting">Login</button>
         </form>
@@ -19,7 +19,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/authStore";
-import type { LoginPayload } from "@/api/auth";
+import type { LoginPayload } from "@/types/auth";
 
 const email = ref('');
 const password = ref('');

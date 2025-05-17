@@ -24,7 +24,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { register } from "@/api/auth";
-import type { RegisterPayload } from "@/api/auth";
+import type { RegisterPayload } from "@/types/auth";
 
 const email = ref('');
 const username =  ref('');

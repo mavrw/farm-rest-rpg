@@ -12,7 +12,7 @@ api.interceptors.request.use(
     (config) => {
         const authStore = useAuthStore();
         const token = authStore.accessToken;
-        console.log(authStore.accessToken);
+
         if (token) {
             config.headers.Authorization = `Bearer ${token}`
         }
@@ -24,11 +24,10 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     response => response,
     async (error) => {
-        if(
-            error.response?.status === 401 &&
-            !error.config.url?.startsWith('/auth/login') &&
-            !error.config.url?.startsWith('/auth/register')
-        ) {
+        const status = error.response?.status;
+        const config = error.config;
+
+        if(status === 401 && !config?.skipAuthError) {
             const authStore = useAuthStore();
 
             await authStore.logout();

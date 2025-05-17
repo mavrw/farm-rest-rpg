@@ -1,14 +1,16 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { login as apiLogin, logout as apiLogout, refresh as apiRefresh } from "@/api/auth";
-import type { LoginPayload, AuthResponse } from "@/api/auth";
+import type { LoginPayload, AuthResponse } from "@/types/auth";
 import api from "@/api";
+import type { UserResponse } from "@/types/user";
 
 export const useAuthStore = defineStore('auth', () => {
     // State
     const accessToken = ref<string | null>(localStorage.getItem('access_token'));
     const isAuthenticated = computed(() => !!accessToken.value);
-    
+    // TODO: add `ready` flag to indicate store hydration
+
     // Helper Function
     const setAccessToken = (token: string) => {
         if(!token) {
@@ -23,7 +25,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     // Actions
     const login = async (payload: LoginPayload) => {
-        const response = await apiLogin(payload);
+        const response: AuthResponse = await apiLogin(payload);
         
         if(!response.access_token) {
             throw new Error('Access token missing from login response');
@@ -45,14 +47,14 @@ export const useAuthStore = defineStore('auth', () => {
     };
     
     const refresh = async () => {
-        const response = await apiRefresh();
+        const response: AuthResponse = await apiRefresh();
         
         setAccessToken(response.access_token);
     };
 
     const fetchCurrentUser = async () => {
         try {
-            const response = await api.get('/me');
+            const response: UserResponse = await api.get('/me');
 
             // TODO: Cache response in a userStore???
 
