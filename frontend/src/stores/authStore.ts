@@ -54,7 +54,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const fetchCurrentUser = async () => {
         try {
-            const response: UserResponse = await api.get('/me');
+            const response: UserResponse = await api.get('/users/me');
 
             // TODO: Cache response in a userStore???
 
