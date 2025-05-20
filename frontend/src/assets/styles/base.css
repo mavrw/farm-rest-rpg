@@ -1,0 +1,37 @@
+/* minimal reset and box-sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* base typography and layout */
+html, body, #app {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: system-ui, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  transition: background-color var(--transition-speed),
+              color var(--transition-speed);
+}
+
+/* links, buttons and headings */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  font: inherit;
+  background: none;
+  border: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-heading);
+  margin: 0;
+}

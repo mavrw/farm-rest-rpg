@@ -1,0 +1,16 @@
+:root {
+    /* colors */
+    --color-background: #ffffff;
+    --color-surface:    #f9fafb;
+    --color-text:       #1f2937;
+    --color-heading:    #111827;
+  
+    --color-primary:    #2563eb;
+    --color-secondary:  #9333ea;
+    --color-accent:     #f59e0b;
+  
+    /* layout */
+    --border-radius:    8px;
+    --transition-speed: 0.2s;
+  }
+  
