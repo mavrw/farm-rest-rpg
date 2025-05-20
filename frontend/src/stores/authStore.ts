@@ -3,7 +3,8 @@ import { computed, ref } from "vue";
 import { login as apiLogin, logout as apiLogout, refresh as apiRefresh } from "@/api/auth";
 import type { LoginPayload, AuthResponse } from "@/types/auth";
 import api from "@/api";
-import type { UserResponse } from "@/types/user";
+import type { UserResponse, User } from "@/types/user";
+import { useUserStore } from "./userStore";
 
 export const useAuthStore = defineStore('auth', () => {
     // State
@@ -44,6 +45,9 @@ export const useAuthStore = defineStore('auth', () => {
         
         accessToken.value = null;
         localStorage.removeItem('access_token');
+        
+        const userStore = useUserStore();
+        userStore.clearUser();
     };
     
     const refresh = async () => {
@@ -56,10 +60,15 @@ export const useAuthStore = defineStore('auth', () => {
         try {
             const response: UserResponse = await api.get('/users/me');
 
-            // TODO: Cache response in a userStore???
+            const userStore = useUserStore();
+            const user: User = {
+                id: response.id,
+                username: response.username,
+                email: response.email,
+            }
 
-            // since `isAuthenticated` is a computed value, 
-            // there's nothing left to do here
+            userStore.setUser(user);
+
         } catch {
             // invalidate authStore state via logout since 
             // access_token is no longer valid

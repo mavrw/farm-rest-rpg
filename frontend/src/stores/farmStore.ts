@@ -36,6 +36,7 @@ export const useFarmStore = defineStore('farm', () => {
             const response: FarmResponse = await apiCreateFarm(payload);
 
             farm.value = response;
+            error.value = null;
         } catch (err) {
             farm.value = null;
 
