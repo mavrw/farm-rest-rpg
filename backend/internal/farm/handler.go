@@ -24,6 +24,8 @@ func RegisterRoutes(r *gin.RouterGroup, pool *pgxpool.Pool) {
 	svc := NewFarmService(q)
 	h := NewFarmHandler(svc)
 
+	// TODO: I think 'get' and 'create' should be removed, just 'farm' would be
+	// - more in-line with REST practices, but maybe I'm wrong
 	r.GET("/farm/get", h.GetFarm)
 	r.POST("/farm/create", h.CreateFarm)
 }
