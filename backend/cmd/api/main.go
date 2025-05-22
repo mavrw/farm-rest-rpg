@@ -11,6 +11,7 @@ import (
 	"github.com/mavrw/farm-rest-rpg/backend/internal/auth"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/db"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/farm"
+	"github.com/mavrw/farm-rest-rpg/backend/internal/inventory"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/plot"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/user"
 	"github.com/mavrw/farm-rest-rpg/backend/pkg/middleware"
@@ -55,6 +56,7 @@ func main() {
 	user.RegisterRoutes(protected, dbPool)
 	farm.RegisterRoutes(protected, dbPool)
 	plot.RegisterRoutes(protected, dbPool)
+	inventory.RegisterRoutes(protected, dbPool)
 
 	// start the server
 	addr := ":" + cfg.Server.Port

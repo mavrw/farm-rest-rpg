@@ -21,4 +21,8 @@ var (
 	ErrPlotNotFullyGrown  = errors.New("plot not ready for harvest")
 
 	ErrCropNotFound = errors.New("crop data not found")
+
+	ErrInventoryItemNotFound = errors.New("inventory item not found")
+	ErrInventoryItemNotOwned = errors.New("inventory item not owned")
+	ErrInventoryEmpty        = errors.New("inventory empty")
 )
