@@ -17,6 +17,18 @@ type Crop struct {
 	YieldAmount       int32
 }
 
+type CurrencyBalance struct {
+	ID             int32
+	UserID         int32
+	CurrencyTypeID int32
+	Balance        int32
+}
+
+type CurrencyType struct {
+	ID   int32
+	Name string
+}
+
 type Farm struct {
 	ID        int32
 	UserID    int32

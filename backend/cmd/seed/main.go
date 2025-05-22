@@ -28,12 +28,21 @@ func main() {
 
 	q := repository.New(pool)
 
+	// seed crop data
 	for idx, crop := range db_seed.InitialCrops {
-		crop.ID = int32(idx)
+		crop.ID = int32(idx + 1)
 		if err := q.CreateCrop(ctx, crop); err != nil {
-			log.Printf("failed to seed crop %+v: %v", crop, err)
+			log.Printf("failed to seed crop %+v: %v\n", crop, err)
 		}
 	}
-
 	log.Println("Crops seeded successfully")
+
+	// seed currency types
+	for idx, currency := range db_seed.InitialCurrencyTypes {
+		currency.ID = int32(idx + 1)
+		if err := q.CreateCurrencyType(ctx, currency); err != nil {
+			log.Printf("failed to seed currency type %+v: %v\n", currency, err)
+		}
+	}
+	log.Println("Currency Types seeded successfully")
 }
