@@ -9,10 +9,11 @@ import (
 	"context"
 )
 
-const createCurrencyType = `-- name: CreateCurrencyType :exec
+const createCurrencyType = `-- name: CreateCurrencyType :one
 INSERT INTO "currency_type" (id, name)
 VALUES ($1, $2)
 ON CONFLICT DO NOTHING
+RETURNING id, name
 `
 
 type CreateCurrencyTypeParams struct {
@@ -20,9 +21,11 @@ type CreateCurrencyTypeParams struct {
 	Name string
 }
 
-func (q *Queries) CreateCurrencyType(ctx context.Context, arg CreateCurrencyTypeParams) error {
-	_, err := q.db.Exec(ctx, createCurrencyType, arg.ID, arg.Name)
-	return err
+func (q *Queries) CreateCurrencyType(ctx context.Context, arg CreateCurrencyTypeParams) (CurrencyType, error) {
+	row := q.db.QueryRow(ctx, createCurrencyType, arg.ID, arg.Name)
+	var i CurrencyType
+	err := row.Scan(&i.ID, &i.Name)
+	return i, err
 }
 
 const getAllCurrencyTypes = `-- name: GetAllCurrencyTypes :many

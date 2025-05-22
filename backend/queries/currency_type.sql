@@ -1,7 +1,8 @@
--- name: CreateCurrencyType :exec
+-- name: CreateCurrencyType :one
 INSERT INTO "currency_type" (id, name)
 VALUES ($1, $2)
-ON CONFLICT DO NOTHING;
+ON CONFLICT DO NOTHING
+RETURNING *;
 
 -- name: GetAllCurrencyTypes :many
 SELECT * 

@@ -9,10 +9,11 @@ import (
 	"context"
 )
 
-const createCrop = `-- name: CreateCrop :exec
+const createCrop = `-- name: CreateCrop :one
 INSERT INTO "crop" (id, name, growth_time_seconds, yield_amount)
 VALUES ($1, $2, $3, $4)
 ON CONFLICT (id) DO NOTHING
+RETURNING id, name, growth_time_seconds, yield_amount
 `
 
 type CreateCropParams struct {
@@ -22,14 +23,21 @@ type CreateCropParams struct {
 	YieldAmount       int32
 }
 
-func (q *Queries) CreateCrop(ctx context.Context, arg CreateCropParams) error {
-	_, err := q.db.Exec(ctx, createCrop,
+func (q *Queries) CreateCrop(ctx context.Context, arg CreateCropParams) (Crop, error) {
+	row := q.db.QueryRow(ctx, createCrop,
 		arg.ID,
 		arg.Name,
 		arg.GrowthTimeSeconds,
 		arg.YieldAmount,
 	)
-	return err
+	var i Crop
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.GrowthTimeSeconds,
+		&i.YieldAmount,
+	)
+	return i, err
 }
 
 const getAllCrops = `-- name: GetAllCrops :many
