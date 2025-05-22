@@ -25,4 +25,7 @@ var (
 	ErrInventoryItemNotFound = errors.New("inventory item not found")
 	ErrInventoryItemNotOwned = errors.New("inventory item not owned")
 	ErrInventoryEmpty        = errors.New("inventory empty")
+
+	ErrNoBalanceFound  = errors.New("balance(s) not found")
+	ErrBalanceNotOwned = errors.New("balance not owned")
 )

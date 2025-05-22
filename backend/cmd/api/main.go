@@ -9,6 +9,7 @@ import (
 
 	"github.com/mavrw/farm-rest-rpg/backend/config"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/auth"
+	"github.com/mavrw/farm-rest-rpg/backend/internal/currency"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/db"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/farm"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/inventory"
@@ -57,6 +58,7 @@ func main() {
 	farm.RegisterRoutes(protected, dbPool)
 	plot.RegisterRoutes(protected, dbPool)
 	inventory.RegisterRoutes(protected, dbPool)
+	currency.RegisterRoutes(protected, dbPool)
 
 	// start the server
 	addr := ":" + cfg.Server.Port
