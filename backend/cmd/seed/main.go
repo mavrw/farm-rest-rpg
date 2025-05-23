@@ -30,18 +30,17 @@ func main() {
 	q := repository.New(pool)
 
 	// TODO: Add consistency check to determine if any section can be skipped
-
-	// seed crop data
-	seedCropDefinitions(ctx, q)
-
-	// seed currency types
-	seedCurrencyTypeDefinitions(ctx, q)
-
 	// seed item types
 	seedItemTypeDefinitions(ctx, q)
 
 	// seed item definitions
 	seedItemDefinitions(ctx, q)
+
+	// seed currency types
+	seedCurrencyTypeDefinitions(ctx, q)
+
+	// seed crop data
+	seedCropDefinitions(ctx, q)
 }
 
 func seedCropDefinitions(ctx context.Context, q *repository.Queries) {
