@@ -30,6 +30,7 @@ func main() {
 	q := repository.New(pool)
 
 	// TODO: Add consistency check to determine if any section can be skipped
+
 	// seed item types
 	seedItemTypeDefinitions(ctx, q)
 
@@ -45,7 +46,7 @@ func main() {
 
 func seedCropDefinitions(ctx context.Context, q *repository.Queries) {
 	for idx, crop := range gamedata.CropDefinitions {
-		crop.ID = int32(idx + 1)
+		crop.ID = idx
 		_, err := q.CreateCropDefinition(ctx, crop)
 		if err == pgx.ErrNoRows {
 			log.Printf("crop data already exists for crop: %s (id: %d)\n", crop.Name, crop.ID)
@@ -58,7 +59,7 @@ func seedCropDefinitions(ctx context.Context, q *repository.Queries) {
 
 func seedCurrencyTypeDefinitions(ctx context.Context, q *repository.Queries) {
 	for idx, currency := range gamedata.CurrencyTypeDefinitions {
-		currency.ID = int32(idx + 1)
+		currency.ID = idx
 		_, err := q.CreateCurrencyType(ctx, currency)
 		if err == pgx.ErrNoRows {
 			log.Printf("currency type already exists for currency: %s (id: %d)\n", currency.Name, currency.ID)
@@ -71,7 +72,7 @@ func seedCurrencyTypeDefinitions(ctx context.Context, q *repository.Queries) {
 
 func seedItemTypeDefinitions(ctx context.Context, q *repository.Queries) {
 	for idx, itemType := range gamedata.ItemTypeDefinitions {
-		itemType.ID = int32(idx + 1)
+		itemType.ID = idx
 		_, err := q.CreateItemType(ctx, itemType)
 		if err == pgx.ErrNoRows {
 			log.Printf("item type data already exists for item type: %s (id: %d)\n", itemType.Name, itemType.ID)
@@ -84,7 +85,7 @@ func seedItemTypeDefinitions(ctx context.Context, q *repository.Queries) {
 
 func seedItemDefinitions(ctx context.Context, q *repository.Queries) {
 	for idx, item := range gamedata.ItemDefinitions {
-		item.ID = int32(idx + 1)
+		item.ID = idx
 		_, err := q.CreateItemDefinition(ctx, item)
 		if err == pgx.ErrNoRows {
 			log.Printf("item data already exists for currency: %s (id: %d)\n", item.Name, item.ID)
