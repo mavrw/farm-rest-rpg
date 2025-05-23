@@ -38,6 +38,7 @@ func main() {
 		seedItemDefinitions,
 		seedCurrencyTypeDefinitions,
 		seedCropDefinitions,
+		seedMarketCatalogDefinitions,
 	}
 
 	for _, step := range seedingOrder {
@@ -96,8 +97,21 @@ func seedItemDefinitions(ctx context.Context, q *repository.Queries) {
 		if err == pgx.ErrNoRows {
 			log.Printf("item data already exists for currency: %s (id: %d)\n", item.Name, item.ID)
 		} else if err != nil {
-			log.Printf("failed to seed item defintion %+v: %v\n", item, err)
+			log.Printf("failed to seed item definition %+v: %v\n", item, err)
 		}
 	}
 	log.Println("Item Definitions seeded successfully")
+}
+
+func seedMarketCatalogDefinitions(ctx context.Context, q *repository.Queries) {
+	for itemID, catalogItem := range gamedata.MarketCatalogDefinitions {
+		catalogItem.ItemID = itemID
+		_, err := q.CreateMarketItem(ctx, catalogItem)
+		if err == pgx.ErrNoRows {
+			log.Printf("market catalog item data already exists for currency: (item_id: %d)\n", catalogItem.ItemID)
+		} else if err != nil {
+			log.Printf("failed to seed market catalog item definition %+v: %v\n", catalogItem, err)
+		}
+	}
+	log.Println("Market Catalog Item Definitions seeded successfully")
 }
