@@ -12,6 +12,8 @@ import (
 	"github.com/mavrw/farm-rest-rpg/backend/internal/repository"
 )
 
+type SeederFunc func(ctx context.Context, q *repository.Queries)
+
 func main() {
 	cfg, err := config.Load()
 	if err != nil {
@@ -31,18 +33,22 @@ func main() {
 
 	// TODO: Add consistency check to determine if any section can be skipped
 
-	// seed item types
-	seedItemTypeDefinitions(ctx, q)
+	seedingOrder := []SeederFunc{
+		seedItemTypeDefinitions,
+		seedItemDefinitions,
+		seedCurrencyTypeDefinitions,
+		seedCropDefinitions,
+	}
 
-	// seed item definitions
-	seedItemDefinitions(ctx, q)
-
-	// seed currency types
-	seedCurrencyTypeDefinitions(ctx, q)
-
-	// seed crop data
-	seedCropDefinitions(ctx, q)
+	for _, step := range seedingOrder {
+		step(ctx, q)
+	}
 }
+
+// TODO: Figure out a way to de-duplicate some of the logic in the seeder funcs
+//		- generics over-complicate things, and the reflection removes
+//		- type safety. A happy medium can probably be reached with
+//		- some helper functions for error checking and logging.
 
 func seedCropDefinitions(ctx context.Context, q *repository.Queries) {
 	for idx, crop := range gamedata.CropDefinitions {
@@ -54,7 +60,7 @@ func seedCropDefinitions(ctx context.Context, q *repository.Queries) {
 			log.Printf("failed to seed crop %+v: %v\n", crop, err)
 		}
 	}
-	log.Println("Crop Definitionss seeded successfully")
+	log.Println("Crop Definitions seeded successfully")
 }
 
 func seedCurrencyTypeDefinitions(ctx context.Context, q *repository.Queries) {
