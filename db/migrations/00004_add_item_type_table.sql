@@ -1,8 +1,8 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE "item_type" (
-    "id"            SERIAL      PRIMARY KEY,
-    "name"          TEXT        UNIQUE NOT NULL
+    "id"    INTEGER     PRIMARY KEY CHECK (id > 0),
+    "name"  TEXT        UNIQUE NOT NULL
 );
 -- +goose StatementEnd
 

@@ -1,8 +1,8 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE "currency_type" (
-    "id"                    SERIAL  PRIMARY KEY,
-    "name"                  TEXT    NOT NULL UNIQUE
+    "id"    INTEGER     PRIMARY KEY CHECK (id > 0),
+    "name"  TEXT        NOT NULL UNIQUE
 );
 -- +goose StatementEnd
 

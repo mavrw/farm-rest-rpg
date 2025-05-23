@@ -9,7 +9,7 @@ CREATE TYPE item_rarity AS ENUM (
 );
 
 CREATE TABLE "item" (
-    "id"            SERIAL      PRIMARY KEY,
+    "id"            INTEGER     PRIMARY KEY CHECK (id > 0),
     "name"          TEXT        UNIQUE NOT NULL,
     "description"   TEXT        NOT NULL DEFAULT '',
     "rarity"        item_rarity NOT NULL, 
