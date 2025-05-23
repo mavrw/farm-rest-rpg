@@ -107,6 +107,12 @@ type ItemType struct {
 	Name string
 }
 
+type MarketCatalog struct {
+	ItemID    int32
+	BuyPrice  *int32
+	SellPrice *int32
+}
+
 type Plot struct {
 	ID        int32
 	FarmID    int32
