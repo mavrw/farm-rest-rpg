@@ -1,8 +1,8 @@
-package db_seed
+package gamedata
 
 import "github.com/mavrw/farm-rest-rpg/backend/internal/repository"
 
-var InitialCurrencyTypes = []repository.CreateCurrencyTypeParams{
+var CurrencyTypeDefinitions = []repository.CreateCurrencyTypeParams{
 	{
 		Name: "Gold",
 	},

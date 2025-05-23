@@ -1,4 +1,4 @@
-package db_seed
+package gamedata
 
 import "github.com/mavrw/farm-rest-rpg/backend/internal/repository"
 
@@ -8,7 +8,7 @@ const (
 	Day    = Hour * 24
 )
 
-var InitialCrops = []repository.CreateCropParams{
+var CropDefinitions = []repository.CreateCropDefinitionParams{
 	{
 		Name:              "Carrot",
 		GrowthTimeSeconds: 1 * Minute,

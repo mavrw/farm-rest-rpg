@@ -17,7 +17,7 @@ func NewInventoryService(q *repository.Queries) *InventoryService {
 }
 
 func (s *InventoryService) GetItem(ctx context.Context, userId, itemId int32) (*repository.Inventory, error) {
-	item, err := s.q.GetItem(ctx, repository.GetItemParams{UserID: userId, ItemID: itemId})
+	item, err := s.q.GetInventoryItem(ctx, repository.GetInventoryItemParams{UserID: userId, ItemID: itemId})
 	if err == pgx.ErrNoRows {
 		return nil, errs.ErrInventoryItemNotFound
 	} else if err != nil {
@@ -33,7 +33,7 @@ func (s *InventoryService) GetItem(ctx context.Context, userId, itemId int32) (*
 }
 
 func (s *InventoryService) ListItems(ctx context.Context, userId int32) (*[]repository.Inventory, error) {
-	items, err := s.q.ListItems(ctx, userId)
+	items, err := s.q.ListInventoryItems(ctx, userId)
 	if err == pgx.ErrNoRows {
 		return nil, errs.ErrInventoryEmpty
 	} else if err != nil {

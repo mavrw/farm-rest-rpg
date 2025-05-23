@@ -9,21 +9,21 @@ import (
 	"context"
 )
 
-const addItem = `-- name: AddItem :one
+const addInventoryItem = `-- name: AddInventoryItem :one
 INSERT INTO "inventory" (user_id, item_id, quantity)
 VALUES ($1, $2, $3)
 ON CONFLICT (user_id, item_id) DO NOTHING
 RETURNING id, user_id, item_id, quantity
 `
 
-type AddItemParams struct {
+type AddInventoryItemParams struct {
 	UserID   int32
 	ItemID   int32
 	Quantity int32
 }
 
-func (q *Queries) AddItem(ctx context.Context, arg AddItemParams) (Inventory, error) {
-	row := q.db.QueryRow(ctx, addItem, arg.UserID, arg.ItemID, arg.Quantity)
+func (q *Queries) AddInventoryItem(ctx context.Context, arg AddInventoryItemParams) (Inventory, error) {
+	row := q.db.QueryRow(ctx, addInventoryItem, arg.UserID, arg.ItemID, arg.Quantity)
 	var i Inventory
 	err := row.Scan(
 		&i.ID,
@@ -34,19 +34,19 @@ func (q *Queries) AddItem(ctx context.Context, arg AddItemParams) (Inventory, er
 	return i, err
 }
 
-const getItem = `-- name: GetItem :one
+const getInventoryItem = `-- name: GetInventoryItem :one
 SELECT id, user_id, item_id, quantity
 FROM "inventory"
 WHERE user_id = $1 AND item_id = $2
 `
 
-type GetItemParams struct {
+type GetInventoryItemParams struct {
 	UserID int32
 	ItemID int32
 }
 
-func (q *Queries) GetItem(ctx context.Context, arg GetItemParams) (Inventory, error) {
-	row := q.db.QueryRow(ctx, getItem, arg.UserID, arg.ItemID)
+func (q *Queries) GetInventoryItem(ctx context.Context, arg GetInventoryItemParams) (Inventory, error) {
+	row := q.db.QueryRow(ctx, getInventoryItem, arg.UserID, arg.ItemID)
 	var i Inventory
 	err := row.Scan(
 		&i.ID,
@@ -76,14 +76,14 @@ func (q *Queries) HasItemQuantity(ctx context.Context, arg HasItemQuantityParams
 	return has_enough, err
 }
 
-const listItems = `-- name: ListItems :many
+const listInventoryItems = `-- name: ListInventoryItems :many
 SELECT id, user_id, item_id, quantity
 FROM "inventory"
 WHERE user_id = $1
 `
 
-func (q *Queries) ListItems(ctx context.Context, userID int32) ([]Inventory, error) {
-	rows, err := q.db.Query(ctx, listItems, userID)
+func (q *Queries) ListInventoryItems(ctx context.Context, userID int32) ([]Inventory, error) {
+	rows, err := q.db.Query(ctx, listInventoryItems, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -107,22 +107,22 @@ func (q *Queries) ListItems(ctx context.Context, userID int32) ([]Inventory, err
 	return items, nil
 }
 
-const removeItem = `-- name: RemoveItem :exec
+const removeInventoryItem = `-- name: RemoveInventoryItem :exec
 DELETE FROM "inventory"
 WHERE item_id = $2 AND user_id = $1
 `
 
-type RemoveItemParams struct {
+type RemoveInventoryItemParams struct {
 	UserID int32
 	ItemID int32
 }
 
-func (q *Queries) RemoveItem(ctx context.Context, arg RemoveItemParams) error {
-	_, err := q.db.Exec(ctx, removeItem, arg.UserID, arg.ItemID)
+func (q *Queries) RemoveInventoryItem(ctx context.Context, arg RemoveInventoryItemParams) error {
+	_, err := q.db.Exec(ctx, removeInventoryItem, arg.UserID, arg.ItemID)
 	return err
 }
 
-const setItemQuantity = `-- name: SetItemQuantity :one
+const setInventoryItemQuantity = `-- name: SetInventoryItemQuantity :one
 INSERT INTO "inventory" (user_id, item_id, quantity)
 VALUES ($1, $2, $3)
 ON CONFLICT (user_id, item_id) DO UPDATE
@@ -130,14 +130,14 @@ SET quantity = EXCLUDED.quantity
 RETURNING id, user_id, item_id, quantity
 `
 
-type SetItemQuantityParams struct {
+type SetInventoryItemQuantityParams struct {
 	UserID   int32
 	ItemID   int32
 	Quantity int32
 }
 
-func (q *Queries) SetItemQuantity(ctx context.Context, arg SetItemQuantityParams) (Inventory, error) {
-	row := q.db.QueryRow(ctx, setItemQuantity, arg.UserID, arg.ItemID, arg.Quantity)
+func (q *Queries) SetInventoryItemQuantity(ctx context.Context, arg SetInventoryItemQuantityParams) (Inventory, error) {
+	row := q.db.QueryRow(ctx, setInventoryItemQuantity, arg.UserID, arg.ItemID, arg.Quantity)
 	var i Inventory
 	err := row.Scan(
 		&i.ID,
@@ -148,7 +148,7 @@ func (q *Queries) SetItemQuantity(ctx context.Context, arg SetItemQuantityParams
 	return i, err
 }
 
-const updateItem = `-- name: UpdateItem :one
+const updateInventoryItem = `-- name: UpdateInventoryItem :one
 UPDATE "inventory"
 SET user_id = $2,
     item_id = $3,
@@ -157,15 +157,15 @@ WHERE id = $1
 RETURNING id, user_id, item_id, quantity
 `
 
-type UpdateItemParams struct {
+type UpdateInventoryItemParams struct {
 	ID       int32
 	UserID   int32
 	ItemID   int32
 	Quantity int32
 }
 
-func (q *Queries) UpdateItem(ctx context.Context, arg UpdateItemParams) (Inventory, error) {
-	row := q.db.QueryRow(ctx, updateItem,
+func (q *Queries) UpdateInventoryItem(ctx context.Context, arg UpdateInventoryItemParams) (Inventory, error) {
+	row := q.db.QueryRow(ctx, updateInventoryItem,
 		arg.ID,
 		arg.UserID,
 		arg.ItemID,

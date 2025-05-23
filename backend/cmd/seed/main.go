@@ -8,7 +8,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/mavrw/farm-rest-rpg/backend/config"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/db"
-	"github.com/mavrw/farm-rest-rpg/backend/internal/db_seed"
+	"github.com/mavrw/farm-rest-rpg/backend/internal/gamedata"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/repository"
 )
 
@@ -32,19 +32,33 @@ func main() {
 	// TODO: Add consistency check to determine if any section can be skipped
 
 	// seed crop data
-	for idx, crop := range db_seed.InitialCrops {
+	seedCropDefinitions(ctx, q)
+
+	// seed currency types
+	seedCurrencyTypeDefinitions(ctx, q)
+
+	// seed item types
+	seedItemTypeDefinitions(ctx, q)
+
+	// seed item definitions
+	seedItemDefinitions(ctx, q)
+}
+
+func seedCropDefinitions(ctx context.Context, q *repository.Queries) {
+	for idx, crop := range gamedata.CropDefinitions {
 		crop.ID = int32(idx + 1)
-		_, err := q.CreateCrop(ctx, crop)
+		_, err := q.CreateCropDefinition(ctx, crop)
 		if err == pgx.ErrNoRows {
 			log.Printf("crop data already exists for crop: %s (id: %d)\n", crop.Name, crop.ID)
 		} else if err != nil {
 			log.Printf("failed to seed crop %+v: %v\n", crop, err)
 		}
 	}
-	log.Println("Crops seeded successfully")
+	log.Println("Crop Definitionss seeded successfully")
+}
 
-	// seed currency types
-	for idx, currency := range db_seed.InitialCurrencyTypes {
+func seedCurrencyTypeDefinitions(ctx context.Context, q *repository.Queries) {
+	for idx, currency := range gamedata.CurrencyTypeDefinitions {
 		currency.ID = int32(idx + 1)
 		_, err := q.CreateCurrencyType(ctx, currency)
 		if err == pgx.ErrNoRows {
@@ -54,4 +68,30 @@ func main() {
 		}
 	}
 	log.Println("Currency Types seeded successfully")
+}
+
+func seedItemTypeDefinitions(ctx context.Context, q *repository.Queries) {
+	for idx, itemType := range gamedata.ItemTypeDefinitions {
+		itemType.ID = int32(idx + 1)
+		_, err := q.CreateItemType(ctx, itemType)
+		if err == pgx.ErrNoRows {
+			log.Printf("item type data already exists for item type: %s (id: %d)\n", itemType.Name, itemType.ID)
+		} else if err != nil {
+			log.Printf("failed to seed item type %+v: %v\n", itemType, err)
+		}
+	}
+	log.Println("Item Types seeded successfully")
+}
+
+func seedItemDefinitions(ctx context.Context, q *repository.Queries) {
+	for idx, item := range gamedata.ItemDefinitions {
+		item.ID = int32(idx + 1)
+		_, err := q.CreateItemDefinition(ctx, item)
+		if err == pgx.ErrNoRows {
+			log.Printf("item data already exists for currency: %s (id: %d)\n", item.Name, item.ID)
+		} else if err != nil {
+			log.Printf("failed to seed item defintion %+v: %v\n", item, err)
+		}
+	}
+	log.Println("Item Definitions seeded successfully")
 }

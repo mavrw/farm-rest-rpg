@@ -2,9 +2,11 @@
 -- +goose StatementBegin
 CREATE TABLE "crop" (
     "id"                    SERIAL  PRIMARY KEY,
-    "name"                  TEXT    NOT NULL,
+    "name"                  TEXT    UNIQUE NOT NULL,
     "growth_time_seconds"   INTEGER NOT NULL,
-    "yield_amount"          INTEGER NOT NULL
+    "seed_item_id"          INTEGER REFERENCES "item"(id) NOT NULL,
+    "yield_item_id"         INTEGER REFERENCES "item"(id) NOT NULL,
+    "yield_amount"          INTEGER NOT NULL DEFAULT 1
 );
 -- +goose StatementEnd
 

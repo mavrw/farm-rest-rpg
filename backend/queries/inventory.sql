@@ -1,15 +1,15 @@
--- name: AddItem :one
+-- name: AddInventoryItem :one
 INSERT INTO "inventory" (user_id, item_id, quantity)
 VALUES ($1, $2, $3)
 ON CONFLICT (user_id, item_id) DO NOTHING
 RETURNING *;
 
--- name: GetItem :one
+-- name: GetInventoryItem :one
 SELECT *
 FROM "inventory"
 WHERE user_id = $1 AND item_id = $2;
 
--- name: UpdateItem :one
+-- name: UpdateInventoryItem :one
 UPDATE "inventory"
 SET user_id = $2,
     item_id = $3,
@@ -17,16 +17,16 @@ SET user_id = $2,
 WHERE id = $1
 RETURNING *;
 
--- name: RemoveItem :exec
+-- name: RemoveInventoryItem :exec
 DELETE FROM "inventory"
 WHERE item_id = $2 AND user_id = $1;
 
--- name: ListItems :many
+-- name: ListInventoryItems :many
 SELECT *
 FROM "inventory"
 WHERE user_id = $1;
 
--- name: SetItemQuantity :one
+-- name: SetInventoryItemQuantity :one
 INSERT INTO "inventory" (user_id, item_id, quantity)
 VALUES ($1, $2, $3)
 ON CONFLICT (user_id, item_id) DO UPDATE

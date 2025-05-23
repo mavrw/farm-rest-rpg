@@ -9,25 +9,36 @@ import (
 	"context"
 )
 
-const createCrop = `-- name: CreateCrop :one
-INSERT INTO "crop" (id, name, growth_time_seconds, yield_amount)
-VALUES ($1, $2, $3, $4)
+const createCropDefinition = `-- name: CreateCropDefinition :one
+INSERT INTO "crop" (
+    id, 
+    name, 
+    growth_time_seconds, 
+    seed_item_id, 
+    yield_item_id, 
+    yield_amount
+)
+VALUES ($1, $2, $3, $4, $5, $6)
 ON CONFLICT (id) DO NOTHING
-RETURNING id, name, growth_time_seconds, yield_amount
+RETURNING id, name, growth_time_seconds, seed_item_id, yield_item_id, yield_amount
 `
 
-type CreateCropParams struct {
+type CreateCropDefinitionParams struct {
 	ID                int32
 	Name              string
 	GrowthTimeSeconds int32
+	SeedItemID        int32
+	YieldItemID       int32
 	YieldAmount       int32
 }
 
-func (q *Queries) CreateCrop(ctx context.Context, arg CreateCropParams) (Crop, error) {
-	row := q.db.QueryRow(ctx, createCrop,
+func (q *Queries) CreateCropDefinition(ctx context.Context, arg CreateCropDefinitionParams) (Crop, error) {
+	row := q.db.QueryRow(ctx, createCropDefinition,
 		arg.ID,
 		arg.Name,
 		arg.GrowthTimeSeconds,
+		arg.SeedItemID,
+		arg.YieldItemID,
 		arg.YieldAmount,
 	)
 	var i Crop
@@ -35,19 +46,61 @@ func (q *Queries) CreateCrop(ctx context.Context, arg CreateCropParams) (Crop, e
 		&i.ID,
 		&i.Name,
 		&i.GrowthTimeSeconds,
+		&i.SeedItemID,
+		&i.YieldItemID,
 		&i.YieldAmount,
 	)
 	return i, err
 }
 
-const getAllCrops = `-- name: GetAllCrops :many
-SELECT id, name, growth_time_seconds, yield_amount 
+const getCropDefinition = `-- name: GetCropDefinition :one
+SELECT id, name, growth_time_seconds, seed_item_id, yield_item_id, yield_amount
+FROM "crop"
+WHERE id = $1
+`
+
+func (q *Queries) GetCropDefinition(ctx context.Context, id int32) (Crop, error) {
+	row := q.db.QueryRow(ctx, getCropDefinition, id)
+	var i Crop
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.GrowthTimeSeconds,
+		&i.SeedItemID,
+		&i.YieldItemID,
+		&i.YieldAmount,
+	)
+	return i, err
+}
+
+const getCropDefinitionByName = `-- name: GetCropDefinitionByName :one
+SELECT id, name, growth_time_seconds, seed_item_id, yield_item_id, yield_amount
+FROM "crop"
+WHERE name = $1
+`
+
+func (q *Queries) GetCropDefinitionByName(ctx context.Context, name string) (Crop, error) {
+	row := q.db.QueryRow(ctx, getCropDefinitionByName, name)
+	var i Crop
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.GrowthTimeSeconds,
+		&i.SeedItemID,
+		&i.YieldItemID,
+		&i.YieldAmount,
+	)
+	return i, err
+}
+
+const listCropDefinitions = `-- name: ListCropDefinitions :many
+SELECT id, name, growth_time_seconds, seed_item_id, yield_item_id, yield_amount 
 FROM "crop"
 ORDER BY id
 `
 
-func (q *Queries) GetAllCrops(ctx context.Context) ([]Crop, error) {
-	rows, err := q.db.Query(ctx, getAllCrops)
+func (q *Queries) ListCropDefinitions(ctx context.Context) ([]Crop, error) {
+	rows, err := q.db.Query(ctx, listCropDefinitions)
 	if err != nil {
 		return nil, err
 	}
@@ -59,6 +112,8 @@ func (q *Queries) GetAllCrops(ctx context.Context) ([]Crop, error) {
 			&i.ID,
 			&i.Name,
 			&i.GrowthTimeSeconds,
+			&i.SeedItemID,
+			&i.YieldItemID,
 			&i.YieldAmount,
 		); err != nil {
 			return nil, err
@@ -69,22 +124,4 @@ func (q *Queries) GetAllCrops(ctx context.Context) ([]Crop, error) {
 		return nil, err
 	}
 	return items, nil
-}
-
-const getCropByID = `-- name: GetCropByID :one
-SELECT id, name, growth_time_seconds, yield_amount
-FROM "crop"
-WHERE id = $1
-`
-
-func (q *Queries) GetCropByID(ctx context.Context, id int32) (Crop, error) {
-	row := q.db.QueryRow(ctx, getCropByID, id)
-	var i Crop
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.GrowthTimeSeconds,
-		&i.YieldAmount,
-	)
-	return i, err
 }

@@ -5,15 +5,64 @@
 package repository
 
 import (
+	"database/sql/driver"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 )
 
+type ItemRarity string
+
+const (
+	ItemRarityCommon    ItemRarity = "common"
+	ItemRarityUncommon  ItemRarity = "uncommon"
+	ItemRarityRare      ItemRarity = "rare"
+	ItemRarityEpic      ItemRarity = "epic"
+	ItemRarityLegendary ItemRarity = "legendary"
+)
+
+func (e *ItemRarity) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = ItemRarity(s)
+	case string:
+		*e = ItemRarity(s)
+	default:
+		return fmt.Errorf("unsupported scan type for ItemRarity: %T", src)
+	}
+	return nil
+}
+
+type NullItemRarity struct {
+	ItemRarity ItemRarity
+	Valid      bool // Valid is true if ItemRarity is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullItemRarity) Scan(value interface{}) error {
+	if value == nil {
+		ns.ItemRarity, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.ItemRarity.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullItemRarity) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.ItemRarity), nil
+}
+
 type Crop struct {
 	ID                int32
 	Name              string
 	GrowthTimeSeconds int32
+	SeedItemID        int32
+	YieldItemID       int32
 	YieldAmount       int32
 }
 
@@ -45,10 +94,17 @@ type Inventory struct {
 }
 
 type Item struct {
-	ID         int32
-	Name       string
-	Tool       string
-	EffectJson []byte
+	ID          int32
+	Name        string
+	Description string
+	Rarity      ItemRarity
+	Type        int32
+	EffectJson  []byte
+}
+
+type ItemType struct {
+	ID   int32
+	Name string
 }
 
 type Plot struct {

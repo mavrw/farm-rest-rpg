@@ -104,7 +104,7 @@ func (s *PlotService) PlantPlot(ctx context.Context, userID, plotID, cropID int3
 	}
 
 	// fetch crop information by cropID
-	crop, err := qtx.GetCropByID(ctx, cropID)
+	crop, err := qtx.GetCropDefinition(ctx, cropID)
 	if err == pgx.ErrNoRows {
 		return nil, errs.ErrCropNotFound
 	}
