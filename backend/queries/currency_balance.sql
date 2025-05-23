@@ -8,6 +8,8 @@ SELECT *
 FROM "currency_balance"
 WHERE id = $1;
 
+-- TODO: Add FOR UPDATE query to lock and prevent race conditoins, when needed
+
 -- name: UpdateCurrencyBalance :one
 UPDATE "currency_balance"
 SET balance = $2

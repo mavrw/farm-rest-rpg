@@ -131,7 +131,15 @@ func (s *AuthService) Refresh(ctx context.Context, token string) (string, string
 }
 
 func (s *AuthService) RevokeRefreshToken(ctx context.Context, token string) error {
-	// TODO: Return ErrTokenAlreadyRevoked if token has already be revoked
+	// ! This really isn't necessary, but until the extra DB query
+	// ! becomes too expensive, this should add some clarity into any
+	// ! bugs that may present themselves from this area of the code.
+	_, err := s.q.GetRefreshToken(ctx, token)
+	if err == pgx.ErrNoRows {
+		return errs.ErrTokenAlreadyRevoked
+	} else if err != nil {
+		return err
+	}
 
 	return s.q.RevokeRefreshToken(ctx, token)
 }

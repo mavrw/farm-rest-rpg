@@ -35,6 +35,9 @@ func (s *PlotService) BuyPlot(ctx context.Context, userID, farmID int32) (*repos
 		return nil, errs.ErrFarmNotOwnedByUser
 	}
 
+	// TODO: Define equation for scaling plot price in relation to plots owned
+	// TODO: Check that the user has enough money to buy the new plot
+
 	// ! start transaciton
 	tx, err := s.dbPool.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
@@ -43,8 +46,6 @@ func (s *PlotService) BuyPlot(ctx context.Context, userID, farmID int32) (*repos
 	defer db.AutoRollbackTx(ctx, tx, &err)
 
 	qtx := s.q.WithTx(tx)
-
-	// TODO: Check that the user has enough money to buy the new plot
 
 	plot, err := qtx.CreatePlot(ctx, farm.ID)
 	if err != nil {

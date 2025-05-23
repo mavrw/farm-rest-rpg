@@ -34,14 +34,22 @@ func (s *FarmService) Create(ctx context.Context, userID int32, in CreateFarmInp
 		return nil, err
 	}
 
+	// TODO: Move these operations into a transaction
+	// !	 - this way if something fails when adding starter plots
+	// !	 - to the user's farm, they don't accidentally end up with
+	// !	 - a plot with less starter plots than intended, or with
+	// !	 - no plots at all.
 	params := repository.CreateFarmParams{
 		UserID: userID,
 		Name:   in.Name,
 	}
-
 	farm, err := s.q.CreateFarm(ctx, params)
+	if err != nil {
+		return nil, err
+	}
 
-	// Does this really need to return a pointer? WHich is better practice?
-	return &farm, err
+	// TODO: Give the user 4 to 6 free starter plots when their farm is created
+
+	return &farm, nil
 
 }
