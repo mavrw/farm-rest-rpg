@@ -11,19 +11,19 @@ import (
 
 const adjustUserCurrencyBalanceByType = `-- name: AdjustUserCurrencyBalanceByType :one
 UPDATE "currency_balance"
-SET balance = balance + $2
-WHERE user_id = $1 AND currency_type_id = $3
+SET balance = balance + $1
+WHERE user_id = $2 AND currency_type_id = $3
 RETURNING id, user_id, currency_type_id, balance
 `
 
 type AdjustUserCurrencyBalanceByTypeParams struct {
+	Amount         int32
 	UserID         int32
-	Balance        int32
 	CurrencyTypeID int32
 }
 
 func (q *Queries) AdjustUserCurrencyBalanceByType(ctx context.Context, arg AdjustUserCurrencyBalanceByTypeParams) (CurrencyBalance, error) {
-	row := q.db.QueryRow(ctx, adjustUserCurrencyBalanceByType, arg.UserID, arg.Balance, arg.CurrencyTypeID)
+	row := q.db.QueryRow(ctx, adjustUserCurrencyBalanceByType, arg.Amount, arg.UserID, arg.CurrencyTypeID)
 	var i CurrencyBalance
 	err := row.Scan(
 		&i.ID,

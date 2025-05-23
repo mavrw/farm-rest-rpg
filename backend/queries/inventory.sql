@@ -17,6 +17,13 @@ SET user_id = $2,
 WHERE id = $1
 RETURNING *;
 
+-- name: UpsertInventoryItem :one
+INSERT INTO inventory (user_id, item_id, quantity)
+VALUES ($1, $2, $3)
+ON CONFLICT (user_id, item_id) DO UPDATE
+SET quantity = inventory.quantity + EXCLUDED.quantity
+RETURNING *;
+
 -- name: RemoveInventoryItem :exec
 DELETE FROM "inventory"
 WHERE item_id = $2 AND user_id = $1;

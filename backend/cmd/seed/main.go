@@ -106,7 +106,7 @@ func seedItemDefinitions(ctx context.Context, q *repository.Queries) {
 func seedMarketCatalogDefinitions(ctx context.Context, q *repository.Queries) {
 	for itemID, catalogItem := range gamedata.MarketCatalogDefinitions {
 		catalogItem.ItemID = itemID
-		_, err := q.CreateMarketItem(ctx, catalogItem)
+		_, err := q.CreateMarketListing(ctx, catalogItem)
 		if err == pgx.ErrNoRows {
 			log.Printf("market catalog item data already exists for currency: (item_id: %d)\n", catalogItem.ItemID)
 		} else if err != nil {

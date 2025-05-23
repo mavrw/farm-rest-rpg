@@ -37,6 +37,6 @@ WHERE user_id = $1;
 
 -- name: AdjustUserCurrencyBalanceByType :one
 UPDATE "currency_balance"
-SET balance = balance + $2
-WHERE user_id = $1 AND currency_type_id = $3
+SET balance = balance + sqlc.arg(amount)
+WHERE user_id = sqlc.arg(user_id) AND currency_type_id = sqlc.arg(currency_type_id)
 RETURNING *;

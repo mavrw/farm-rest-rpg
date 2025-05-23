@@ -26,6 +26,11 @@ var (
 	ErrInventoryItemNotOwned = errors.New("inventory item not owned")
 	ErrInventoryEmpty        = errors.New("inventory empty")
 
-	ErrNoBalanceFound  = errors.New("balance(s) not found")
-	ErrBalanceNotOwned = errors.New("balance not owned")
+	ErrNoBalanceFound      = errors.New("balance(s) not found")
+	ErrBalanceNotOwned     = errors.New("balance not owned")
+	ErrInsufficientBalance = errors.New("insufficient balance")
+
+	ErrListingNotFound    = errors.New("no listing(s) found")
+	ErrItemNotPurchasable = errors.New("item cannot be purchased")
+	ErrItemNotSellable    = errors.New("item cannot be sold")
 )

@@ -180,3 +180,29 @@ func (q *Queries) UpdateInventoryItem(ctx context.Context, arg UpdateInventoryIt
 	)
 	return i, err
 }
+
+const upsertInventoryItem = `-- name: UpsertInventoryItem :one
+INSERT INTO inventory (user_id, item_id, quantity)
+VALUES ($1, $2, $3)
+ON CONFLICT (user_id, item_id) DO UPDATE
+SET quantity = inventory.quantity + EXCLUDED.quantity
+RETURNING id, user_id, item_id, quantity
+`
+
+type UpsertInventoryItemParams struct {
+	UserID   int32
+	ItemID   int32
+	Quantity int32
+}
+
+func (q *Queries) UpsertInventoryItem(ctx context.Context, arg UpsertInventoryItemParams) (Inventory, error) {
+	row := q.db.QueryRow(ctx, upsertInventoryItem, arg.UserID, arg.ItemID, arg.Quantity)
+	var i Inventory
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.ItemID,
+		&i.Quantity,
+	)
+	return i, err
+}

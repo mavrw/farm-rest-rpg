@@ -1,6 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE "market_catalog" (
+CREATE TABLE "market_listing" (
     item_id     INTEGER PRIMARY KEY REFERENCES "item"(id),
     buy_price   INTEGER,
     sell_price  INTEGER
@@ -11,5 +11,5 @@ CREATE TABLE "market_catalog" (
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE "market_catalog";
+DROP TABLE "market_listing";
 -- +goose StatementEnd
