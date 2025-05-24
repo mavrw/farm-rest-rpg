@@ -118,7 +118,30 @@ func (s *PlotService) PlantPlot(ctx context.Context, userID, plotID, cropID int3
 		return nil, err
 	}
 
-	// TODO: verify that user has seeds in inventory
+	cropInfo, err := s.q.GetCropDefinition(ctx, cropID)
+	if err == pgx.ErrNoRows {
+		return nil, errs.ErrCropNotFound
+	} else if err != nil {
+		return nil, err
+	}
+
+	// get player's inventory for the crop's seed item
+	userItemQtyParams := repository.GetInventoryItemParams{
+		UserID: userID,
+		ItemID: cropInfo.SeedItemID,
+	}
+	playerSeedItemInventory, err := s.q.GetInventoryItem(ctx, userItemQtyParams)
+	if err == pgx.ErrNoRows {
+		return nil, errs.ErrInventoryItemNotFound
+	} else if err != nil {
+		return nil, err
+	}
+
+	// ? Does the player have enough seeds
+	// TODO: Consider different seed quantities to plant various crops
+	if playerSeedItemInventory.Quantity <= 0 {
+		return nil, errs.ErrInsufficientSeedQuantity
+	}
 
 	// ! start transaciton
 	tx, err := s.dbPool.BeginTx(ctx, pgx.TxOptions{})
@@ -157,7 +180,7 @@ func (s *PlotService) PlantPlot(ctx context.Context, userID, plotID, cropID int3
 	}
 
 	// sow plot with crop information
-	plot, err = qtx.SowPlotByID(ctx, repository.SowPlotByIDParams{
+	sownPlot, err := qtx.SowPlotByID(ctx, repository.SowPlotByIDParams{
 		ID:        plot.ID,
 		CropID:    &crop.ID,
 		PlantedAt: time.Now(),
@@ -170,7 +193,15 @@ func (s *PlotService) PlantPlot(ctx context.Context, userID, plotID, cropID int3
 		return nil, err
 	}
 
-	// TODO: deduct seeds from user inventory
+	setInvItemParams := repository.SetInventoryItemQuantityParams{
+		UserID:   userID,
+		ItemID:   cropInfo.SeedItemID,
+		Quantity: playerSeedItemInventory.Quantity - 1,
+	}
+	_, err = qtx.SetInventoryItemQuantity(ctx, setInvItemParams)
+	if err != nil {
+		return nil, errs.ErrUpdatingInventoryItem
+	}
 
 	// ! commit transaction
 	err = tx.Commit(ctx)
@@ -178,7 +209,7 @@ func (s *PlotService) PlantPlot(ctx context.Context, userID, plotID, cropID int3
 		return nil, err
 	}
 
-	return &plot, nil
+	return &sownPlot, nil
 }
 
 func (s *PlotService) HarvestPlot(ctx context.Context, userID, plotID int32) (*repository.Plot, error) {

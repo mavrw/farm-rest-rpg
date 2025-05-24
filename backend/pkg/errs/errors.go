@@ -17,12 +17,13 @@ var (
 	ErrFarmAlreadyHasPlots = errors.New("farm already has plots")
 	ErrFarmHasNoPlots      = errors.New("farm has no plots")
 
-	ErrPlotNotFound       = errors.New("plot(s) not found")
-	ErrPlotCreationFailed = errors.New("error creating plot")
-	ErrPlotNotOwnedByUser = errors.New("plot not owned by user")
-	ErrPlotAlreadyPlanted = errors.New("plot already planted")
-	ErrPlotNotFullyGrown  = errors.New("plot not ready for harvest")
-	ErrCannotAffordPlot   = errors.New("user cannot afford new plot")
+	ErrPlotNotFound             = errors.New("plot(s) not found")
+	ErrPlotCreationFailed       = errors.New("error creating plot")
+	ErrPlotNotOwnedByUser       = errors.New("plot not owned by user")
+	ErrPlotAlreadyPlanted       = errors.New("plot already planted")
+	ErrPlotNotFullyGrown        = errors.New("plot not ready for harvest")
+	ErrCannotAffordPlot         = errors.New("user cannot afford new plot")
+	ErrInsufficientSeedQuantity = errors.New("insufficient seed quantity")
 
 	ErrCropNotFound = errors.New("crop data not found")
 
@@ -31,6 +32,7 @@ var (
 	ErrInventoryEmpty           = errors.New("inventory empty")
 	ErrInsufficientItemQuantity = errors.New("insufficient item quantity")
 	ErrInvalidItemQuantity      = errors.New("invalid item quantity")
+	ErrUpdatingInventoryItem    = errors.New("inventory update failed")
 
 	ErrNoBalanceFound      = errors.New("balance(s) not found")
 	ErrBalanceNotOwned     = errors.New("balance not owned")

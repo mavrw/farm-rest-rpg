@@ -187,7 +187,7 @@ func (s *MarketService) SellMarketListing(ctx context.Context, userID, itemID, q
 	}
 	newInventoryItem, err := qtx.SetInventoryItemQuantity(ctx, setInvItemParams)
 	if err != nil {
-		return nil, err
+		return nil, errs.ErrUpdatingInventoryItem
 	}
 
 	// ! Add total sale price to player balance
