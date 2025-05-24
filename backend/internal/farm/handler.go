@@ -21,7 +21,7 @@ func NewFarmHandler(svc *FarmService) *FarmHandler {
 func RegisterRoutes(r *gin.RouterGroup, pool *pgxpool.Pool) {
 	q := repository.New(pool)
 
-	svc := NewFarmService(q)
+	svc := NewFarmService(q, pool)
 	h := NewFarmHandler(svc)
 
 	// TODO: I think 'get' and 'create' should be removed, just 'farm' would be
