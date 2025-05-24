@@ -32,7 +32,8 @@ func main() {
 	q := repository.New(pool)
 
 	// TODO: Add consistency check to determine if any section can be skipped
-
+	// 		- Something like comparing the size of the seed maps vs
+	//		- the number of rows returned from that table
 	seedingOrder := []SeederFunc{
 		seedItemTypeDefinitions,
 		seedItemDefinitions,
