@@ -6,12 +6,9 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/db"
+	"github.com/mavrw/farm-rest-rpg/backend/internal/plot"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/repository"
 	"github.com/mavrw/farm-rest-rpg/backend/pkg/errs"
-)
-
-const (
-	numStarterPlots = 6
 )
 
 type FarmService struct {
@@ -44,7 +41,7 @@ func (s *FarmService) Create(ctx context.Context, userID int32, in CreateFarmInp
 		return nil, err
 	}
 
-	// TODONE: Move these operations into a transaction
+	// DONE: Move these operations into a transaction
 	// !	 - this way if something fails when adding starter plots
 	// !	 - to the user's farm, they don't accidentally end up with
 	// !	 - a plot with less starter plots than intended, or with
@@ -77,7 +74,7 @@ func (s *FarmService) Create(ctx context.Context, userID int32, in CreateFarmInp
 	}
 
 	// Give the user free starter plots when their farm is created
-	for range numStarterPlots {
+	for range plot.NumStarterPlots {
 		_, err := qtx.CreatePlot(ctx, farm.ID)
 		if err != nil {
 			// failed to create a starter plot, roll everything back

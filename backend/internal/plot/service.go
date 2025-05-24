@@ -2,13 +2,22 @@ package plot
 
 import (
 	"context"
+	"math"
 	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/mavrw/farm-rest-rpg/backend/internal/currency"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/db"
+	"github.com/mavrw/farm-rest-rpg/backend/internal/gamedata"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/repository"
 	"github.com/mavrw/farm-rest-rpg/backend/pkg/errs"
+)
+
+const (
+	NumStarterPlots = 6
+	BasePlotCost    = 100.0
+	CostGrowthRate  = 1.15
 )
 
 type PlotService struct {
@@ -35,8 +44,34 @@ func (s *PlotService) BuyPlot(ctx context.Context, userID, farmID int32) (*repos
 		return nil, errs.ErrFarmNotOwnedByUser
 	}
 
-	// TODO: Define equation for scaling plot price in relation to plots owned
-	// TODO: Check that the user has enough money to buy the new plot
+	// get the user's gold balance
+	userBalParams := repository.GetUserCurrencyBalanceByTypeParams{
+		UserID:         userID,
+		CurrencyTypeID: gamedata.GoldCurrency,
+	}
+	playerBalance, err := s.q.GetUserCurrencyBalanceByType(ctx, userBalParams)
+	if err == pgx.ErrNoRows {
+		return nil, errs.ErrNoBalanceFound
+	} else if err != nil {
+		return nil, err
+	}
+
+	// get the number of plots owned by the user
+	farmPlots, err := s.q.GetPlotsByFarmID(ctx, farm.ID)
+	if err == pgx.ErrNoRows {
+		return nil, errs.ErrFarmHasNoPlots
+	} else if err != nil {
+		return nil, err
+	}
+	plotsOwned := int32(len(farmPlots))
+
+	// calculate the cost of the new plot
+	newPlotCost := CalculatePlotCost(plotsOwned)
+
+	// ? Does the player have a sufficient balance ?
+	if playerBalance.Balance < newPlotCost {
+		return nil, errs.ErrCannotAffordPlot
+	}
 
 	// ! start transaciton
 	tx, err := s.dbPool.BeginTx(ctx, pgx.TxOptions{})
@@ -52,13 +87,24 @@ func (s *PlotService) BuyPlot(ctx context.Context, userID, farmID int32) (*repos
 		return nil, err
 	}
 
-	// TODO: Deduct cost of plot from the user's money
+	adjustBalParams := repository.AdjustUserCurrencyBalanceByTypeParams{
+		UserID:         userID,
+		Amount:         currency.Debit(newPlotCost),
+		CurrencyTypeID: gamedata.GoldCurrency,
+	}
+	_, err = qtx.AdjustUserCurrencyBalanceByType(ctx, adjustBalParams)
+	if err != nil {
+		return nil, err
+	}
 
 	// ! commit transaction
 	err = tx.Commit(ctx)
 	if err != nil {
 		return nil, err
 	}
+
+	// TODO: Create `PlotTransactionResult` struct and return that instead
+	// !	- this would enable the logging and auditing of plot transactions
 
 	return &plot, nil
 }
@@ -239,4 +285,14 @@ func (s *PlotService) GetPlotStateByID(ctx context.Context, userID, plotID int32
 
 	// return plot
 	return &plot, nil
+}
+
+func CalculatePlotCost(plotsOwned int32) int32 {
+	plotsPurchased := float64(plotsOwned - NumStarterPlots)
+	if plotsPurchased < 0 {
+		plotsPurchased = 0
+	}
+
+	cost := BasePlotCost * math.Pow(CostGrowthRate, plotsPurchased)
+	return int32(cost)
 }
