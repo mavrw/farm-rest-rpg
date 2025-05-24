@@ -247,7 +247,26 @@ func (s *PlotService) HarvestPlot(ctx context.Context, userID, plotID int32) (*r
 		return &plot, errs.ErrPlotNotFullyGrown
 	}
 
-	// TODO: Add harvested crops to player inventory
+	// get sown crop info
+	cropInfo, err := qtx.GetCropDefinition(ctx, *plot.CropID)
+	if err == pgx.ErrNoRows {
+		return nil, errs.ErrCropNotFound
+	} else if err != nil {
+		return nil, err
+	}
+
+	// update player inventory for crop yield item
+	upsertInvItemParams := repository.UpsertInventoryItemParams{
+		UserID:   userID,
+		ItemID:   cropInfo.YieldItemID,
+		Quantity: cropInfo.YieldAmount,
+	}
+	_, err = qtx.UpsertInventoryItem(ctx, upsertInvItemParams)
+	if err == pgx.ErrNoRows {
+		return nil, errs.ErrUpdatingInventoryItem
+	} else if err != nil {
+		return nil, err
+	}
 
 	// clear crop info
 	plot, err = qtx.HarvestPlotByID(ctx, plot.ID)
