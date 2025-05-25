@@ -221,17 +221,8 @@ func (s *PlotService) HarvestPlot(ctx context.Context, userID, plotID int32) (*r
 		return nil, err
 	}
 
-	// ! start transaciton
-	tx, err := s.dbPool.BeginTx(ctx, pgx.TxOptions{})
-	if err != nil {
-		return nil, err
-	}
-	defer db.AutoRollbackTx(ctx, tx, &err)
-
-	qtx := s.q.WithTx(tx)
-
 	// check that plot belongs to user via farmID
-	farm, err := qtx.GetFarmByUserID(ctx, userID)
+	farm, err := s.q.GetFarmByUserID(ctx, userID)
 	if err == pgx.ErrNoRows {
 		return nil, errs.ErrFarmNotFound
 	} else if err != nil {
@@ -248,12 +239,21 @@ func (s *PlotService) HarvestPlot(ctx context.Context, userID, plotID int32) (*r
 	}
 
 	// get sown crop info
-	cropInfo, err := qtx.GetCropDefinition(ctx, *plot.CropID)
+	cropInfo, err := s.q.GetCropDefinition(ctx, *plot.CropID)
 	if err == pgx.ErrNoRows {
 		return nil, errs.ErrCropNotFound
 	} else if err != nil {
 		return nil, err
 	}
+
+	// ! start transaciton
+	tx, err := s.dbPool.BeginTx(ctx, pgx.TxOptions{})
+	if err != nil {
+		return nil, err
+	}
+	defer db.AutoRollbackTx(ctx, tx, &err)
+
+	qtx := s.q.WithTx(tx)
 
 	// update player inventory for crop yield item
 	upsertInvItemParams := repository.UpsertInventoryItemParams{
