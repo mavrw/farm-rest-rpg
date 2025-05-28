@@ -141,6 +141,7 @@ func (q *Queries) ListUserCurrencyBalances(ctx context.Context, userID int32) ([
 }
 
 const updateCurrencyBalance = `-- name: UpdateCurrencyBalance :one
+
 UPDATE "currency_balance"
 SET balance = $2
 WHERE id = $1
@@ -152,6 +153,7 @@ type UpdateCurrencyBalanceParams struct {
 	Balance int32
 }
 
+// TODO: Add FOR UPDATE query to lock and prevent race conditoins, when needed
 func (q *Queries) UpdateCurrencyBalance(ctx context.Context, arg UpdateCurrencyBalanceParams) (CurrencyBalance, error) {
 	row := q.db.QueryRow(ctx, updateCurrencyBalance, arg.ID, arg.Balance)
 	var i CurrencyBalance

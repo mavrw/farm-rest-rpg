@@ -1,6 +1,7 @@
 package farm
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -32,6 +33,8 @@ func RegisterRoutes(r *gin.RouterGroup, pool *pgxpool.Pool) {
 
 func (h *FarmHandler) GetFarm(c *gin.Context) {
 	userId := c.GetInt(middleware.ContextUserIDKey)
+
+	fmt.Printf("\033[33m"+"GetFarm -> UserID: (%d)"+"\033[0m \n", int32(userId))
 
 	farm, err := h.svc.Get(c.Request.Context(), int32(userId))
 	if err != nil {

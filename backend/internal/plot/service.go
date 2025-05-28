@@ -179,13 +179,17 @@ func (s *PlotService) PlantPlot(ctx context.Context, userID, plotID, cropID int3
 		return nil, errs.ErrCropNotFound
 	}
 
+	plantTime := time.Now()
+	harvestTime := time.Now().Add(time.Duration(crop.GrowthTimeSeconds) * time.Second)
+
 	// sow plot with crop information
-	sownPlot, err := qtx.SowPlotByID(ctx, repository.SowPlotByIDParams{
+	sowPlotParams := repository.SowPlotByIDParams{
 		ID:        plot.ID,
 		CropID:    &crop.ID,
-		PlantedAt: time.Now(),
-		HarvestAt: time.Now().Add(time.Duration(crop.GrowthTimeSeconds) * time.Second),
-	})
+		PlantedAt: &plantTime,
+		HarvestAt: &harvestTime,
+	}
+	sownPlot, err := qtx.SowPlotByID(ctx, sowPlotParams)
 	if err == pgx.ErrNoRows {
 		// ! If this happens, something got really fucked up
 		return nil, errs.ErrPlotNotFound
@@ -234,7 +238,7 @@ func (s *PlotService) HarvestPlot(ctx context.Context, userID, plotID int32) (*r
 	}
 
 	// check that plot is ready for harvest
-	if time.Until(plot.HarvestAt) > 0 {
+	if time.Until(*plot.HarvestAt) > 0 {
 		return &plot, errs.ErrPlotNotFullyGrown
 	}
 

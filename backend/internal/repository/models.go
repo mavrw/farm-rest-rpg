@@ -117,8 +117,8 @@ type Plot struct {
 	ID        int32
 	FarmID    int32
 	CropID    *int32
-	PlantedAt time.Time
-	HarvestAt time.Time
+	PlantedAt *time.Time
+	HarvestAt *time.Time
 }
 
 type RefreshToken struct {

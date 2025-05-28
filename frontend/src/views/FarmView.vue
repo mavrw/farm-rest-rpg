@@ -11,19 +11,36 @@
         <div v-else class="farm-details">
             <p><strong>Name:</strong> {{ farmStore.farm?.Name }}</p>
             <p><strong>Created:</strong> {{ farmStore.farm?.CreatedAt }}</p>
+
+            <ul class="space-y-2">
+            <li
+                v-for="plot in plots.plots" 
+                class="p-2 border rounded shadow-sm bg-white"
+            >
+                <!-- <div><strong>Plot ID:</strong> {{ plotID }}</div> -->
+                <div><strong>Plot:</strong> {{  plot }}</div>
+            </li>
+        </ul>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { useFarmStore } from '@/stores/farmStore';
+import { usePlotStore } from '@/stores/plotStore';
 import { onMounted } from 'vue';
 import CreateFarmView from './CreateFarmView.vue';
+import { storeToRefs } from 'pinia';
 
 const farmStore = useFarmStore();
+const plotStore = usePlotStore();
+
+const farm = storeToRefs(farmStore);
+const plots = storeToRefs(plotStore);
 
 onMounted(async () => {
     await farmStore.get();
+    await plotStore.getAllPlots();
 });
 </script>
 

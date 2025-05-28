@@ -114,8 +114,8 @@ RETURNING id, farm_id, crop_id, planted_at, harvest_at
 type SowPlotByIDParams struct {
 	ID        int32
 	CropID    *int32
-	PlantedAt time.Time
-	HarvestAt time.Time
+	PlantedAt *time.Time
+	HarvestAt *time.Time
 }
 
 func (q *Queries) SowPlotByID(ctx context.Context, arg SowPlotByIDParams) (Plot, error) {

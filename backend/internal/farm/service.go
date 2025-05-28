@@ -2,10 +2,12 @@ package farm
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/db"
+	"github.com/mavrw/farm-rest-rpg/backend/internal/gamedata"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/plot"
 	"github.com/mavrw/farm-rest-rpg/backend/internal/repository"
 	"github.com/mavrw/farm-rest-rpg/backend/pkg/errs"
@@ -63,24 +65,39 @@ func (s *FarmService) Create(ctx context.Context, userID int32, in CreateFarmInp
 	}
 	farm, err := qtx.CreateFarm(ctx, params)
 	if err != nil {
+		fmt.Printf("\033[31m"+"CreateFarm -> ERROR: (%v)"+"\033[0m \n", err)
 		return nil, err
 	}
 
 	// ! Quick sanity check to make sure the user doesn't somehow
 	// ! - already have plots
-	plots, err := s.q.GetPlotsByFarmID(ctx, farm.ID)
+	plots, err := qtx.GetPlotsByFarmID(ctx, farm.ID)
+	if err != nil {
+		return nil, err
+	}
 	if len(plots) > 0 {
 		return nil, errs.ErrFarmAlreadyHasPlots
 	}
 
 	// Give the user free starter plots when their farm is created
 	for range plot.NumStarterPlots {
-		_, err := qtx.CreatePlot(ctx, farm.ID)
-		if err != nil {
+		if _, err := qtx.CreatePlot(ctx, farm.ID); err != nil {
 			// failed to create a starter plot, roll everything back
 			// so farm creation can be tried again
+			fmt.Printf("\033[31m"+"CreatePlot -> ERROR: (%v)"+"\033[0m \n", err)
 			return nil, errs.ErrPlotCreationFailed
 		}
+	}
+
+	// Give the user some seeds to kickstart their farm
+	seedItemParams := repository.AddInventoryItemParams{
+		UserID:   userID,
+		ItemID:   gamedata.Seed_01,
+		Quantity: plot.NumStarterPlots,
+	}
+	if _, err := qtx.AddInventoryItem(ctx, seedItemParams); err != nil {
+		fmt.Printf("\033[31m"+"AddInventoryItem -> ERROR: (%v)"+"\033[0m \n", err)
+		return nil, errs.ErrUpdatingInventoryItem
 	}
 
 	// ? Something is stinking here, but I can't quite pin down

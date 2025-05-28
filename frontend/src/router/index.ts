@@ -7,6 +7,7 @@ import RegisterView from "@/views/RegisterView.vue";
 import FarmView from "@/views/FarmView.vue";
 import { useAuthStore } from "@/stores/authStore";
 import AppLayout from "@/layouts/AppLayout.vue";
+import InventoryView from "@/views/InventoryView.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -22,6 +23,12 @@ const routes: RouteRecordRaw[] = [
         path: 'farm',
         name: 'Farm',
         component: FarmView,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: 'inventory',
+        name: 'Inventory',
+        component: InventoryView,
         meta: { requiresAuth: true },
       },
     ]

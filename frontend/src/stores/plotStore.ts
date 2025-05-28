@@ -82,6 +82,7 @@ export const usePlotStore = defineStore('plot', () => {
 
     return {
         fetchPlots,
+        plots,
         buy,
         plant,
         harvest,
