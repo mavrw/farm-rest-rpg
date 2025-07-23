@@ -7,7 +7,7 @@ A monorepo for a text-based farming RPG game, featuring:
 - **Vue 3 + TypeScript** frontend for testing/admin  
 - **Nginx** reverse-proxy for unified frontend/backend hosting  
 - **Docker Compose** for local development  
-- **Terraform** stubs for AWS IaC  
+- ~~**Terraform** stubs for AWS IaC~~  
 
 > 📄 The detailed design document has been renamed to [`DESIGN-DOC.md`](./docs/DESIGN-DOC.md).
 
@@ -128,9 +128,9 @@ From the project root:
 
   - Develop in `<repo>/frontend/src/`
   - Dev server available at [http://localhost:3000](http://localhost:3000) (proxied by Nginx)
-- **Terraform**
+- ~~**Terraform**~~
 
-  - Stub modules in `devops/terraform/` for AWS deployment
+  - ~~Stub modules in `devops/terraform/` for AWS deployment~~
 
 ---
 
